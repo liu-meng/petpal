@@ -1,0 +1,16 @@
+{
+  "pages": [
+    "pages/onboarding/onboarding",
+    "pages/index/index",
+    "pages/tasks/tasks",
+    "pages/parent/parent"
+  ],
+  "window": {
+    "navigationBarTitleText": "PetPal",
+    "navigationBarBackgroundColor": "#FFF7E6",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#FFFDF8",
+    "backgroundTextStyle": "light"
+  },
+  "style": "v2"
+}
