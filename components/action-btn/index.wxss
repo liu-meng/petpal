@@ -1,0 +1,39 @@
+.action-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10rpx;
+  min-height: 176rpx;
+  padding: 24rpx 12rpx;
+  box-sizing: border-box;
+  border-radius: 30rpx;
+  background: linear-gradient(180deg, #fff8e7 0%, #ffe7b4 100%);
+  box-shadow: 0 16rpx 32rpx rgba(210, 157, 68, 0.14);
+}
+
+.action-btn.is-disabled {
+  background: linear-gradient(180deg, #f1ece2 0%, #e1dacc 100%);
+  box-shadow: none;
+  opacity: 0.7;
+}
+
+.action-btn__icon {
+  font-size: 42rpx;
+}
+
+.action-btn__label {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #5d4524;
+}
+
+.action-btn.is-disabled .action-btn__label,
+.action-btn.is-disabled .action-btn__cost {
+  color: #8d8371;
+}
+
+.action-btn__cost {
+  font-size: 22rpx;
+  color: #8a6a38;
+}

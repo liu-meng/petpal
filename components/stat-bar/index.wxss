@@ -1,0 +1,47 @@
+.stat-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 14rpx;
+}
+
+.stat-bar__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+
+.stat-bar__title {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  min-width: 0;
+}
+
+.stat-bar__icon {
+  font-size: 30rpx;
+}
+
+.stat-bar__label {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #5d4524;
+}
+
+.stat-bar__value {
+  font-size: 24rpx;
+  color: #8d754a;
+}
+
+.stat-bar__track {
+  height: 20rpx;
+  border-radius: 999rpx;
+  background: #f6ebd3;
+  overflow: hidden;
+}
+
+.stat-bar__fill {
+  height: 100%;
+  border-radius: inherit;
+  transition: width 180ms ease-out;
+}

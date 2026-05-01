@@ -1,0 +1,20 @@
+<view class="pet-avatar {{renderModel ? 'is-ready' : ''}}" style="{{shellStyle}}">
+  <block wx:if="{{renderModel}}">
+    <block wx:for="{{renderModel.layers}}" wx:key="key">
+      <view
+        class="pet-avatar__layer pet-avatar__layer--{{item.key}} pet-avatar__anim--{{renderModel.anim}} pet-avatar__mood--{{renderModel.mood}}"
+        style="z-index: {{item.zIndex}};"
+      >
+        <image
+          class="pet-avatar__image"
+          src="{{item.src}}"
+          mode="aspectFit"
+          data-key="{{item.key}}"
+          bindload="onLayerLoad"
+          binderror="onLayerError"
+        />
+        <view wx:if="{{item.useFallback}}" class="pet-avatar__fallback">{{item.key}}</view>
+      </view>
+    </block>
+  </block>
+</view>

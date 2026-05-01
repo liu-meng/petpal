@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "首次设置",
+  "usingComponents": {
+    "pet-avatar": "/components/pet-avatar/index"
+  }
+}

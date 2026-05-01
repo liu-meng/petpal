@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "PetPal",
+  "usingComponents": {
+    "action-btn": "/components/action-btn/index",
+    "pet-avatar": "/components/pet-avatar/index",
+    "stat-bar": "/components/stat-bar/index"
+  }
+}

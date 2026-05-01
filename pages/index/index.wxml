@@ -1,1 +1,86 @@
-<view class="page-placeholder">index placeholder</view>
+<view class="index-page">
+  <view class="index-header">
+    <view class="index-title">
+      <text class="index-title__emoji">🐕</text>
+      <text class="index-title__name">{{petName}}</text>
+    </view>
+    <view class="index-parent-entry" bindtap="handleGoParent">
+      <text class="index-parent-entry__icon">🔒</text>
+      <text class="index-parent-entry__label">家长</text>
+    </view>
+  </view>
+
+  <view class="index-card index-pet-card">
+    <view class="index-pet-avatar">
+      <pet-avatar
+        species="{{pet.type}}"
+        mood="{{mood}}"
+        action="{{activeAction}}"
+        hunger="{{pet.hunger}}"
+        happiness="{{pet.happiness}}"
+        size="280"
+      />
+    </view>
+    <view class="index-bubble">{{bubbleText}}</view>
+  </view>
+
+  <view class="index-card index-stats-card">
+    <stat-bar
+      icon="🍖"
+      label="饱食度"
+      value="{{pet.hunger}}"
+      max="10"
+      color="#ffb24d"
+    />
+    <stat-bar
+      icon="💛"
+      label="快乐值"
+      value="{{pet.happiness}}"
+      max="10"
+      color="#ff82a3"
+    />
+  </view>
+
+  <view class="index-points-card">
+    <text class="index-points-card__label">💰 积分</text>
+    <text class="index-points-card__value">{{points}} 分</text>
+  </view>
+
+  <view class="index-task-entry" bindtap="handleGoTasks">
+    <view class="index-task-entry__title">
+      <text class="index-task-entry__icon">📋</text>
+      <text class="index-task-entry__text">今日任务</text>
+      <text class="index-task-entry__count">({{pendingTaskCount}})</text>
+    </view>
+    <view class="index-task-entry__meta">
+      <view wx:if="{{pendingTaskCount > 0}}" class="index-task-entry__dot"></view>
+      <text class="index-task-entry__arrow">›</text>
+    </view>
+  </view>
+
+  <view class="index-actions">
+    <action-btn
+      icon="🍖"
+      label="喂食"
+      cost-label="-1分"
+      action="feed"
+      disabled="{{feedDisabled}}"
+      bindtapaction="handleActionTap"
+    />
+    <action-btn
+      icon="🎾"
+      label="玩耍"
+      cost-label="-1分"
+      action="play"
+      disabled="{{playDisabled}}"
+      bindtapaction="handleActionTap"
+    />
+    <action-btn
+      icon="🤚"
+      label="抚摸"
+      cost-label="免费"
+      action="pet"
+      bindtapaction="handleActionTap"
+    />
+  </view>
+</view>

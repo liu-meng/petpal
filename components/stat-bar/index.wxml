@@ -1,0 +1,12 @@
+<view class="stat-bar">
+  <view class="stat-bar__header">
+    <view class="stat-bar__title">
+      <text wx:if="{{icon}}" class="stat-bar__icon">{{icon}}</text>
+      <text class="stat-bar__label">{{label}}</text>
+    </view>
+    <text class="stat-bar__value">{{value}}/{{max}}</text>
+  </view>
+  <view class="stat-bar__track">
+    <view class="stat-bar__fill" style="{{fillStyle}}"></view>
+  </view>
+</view>

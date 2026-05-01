@@ -1,0 +1,8 @@
+<view
+  class="action-btn {{disabled ? 'is-disabled' : ''}}"
+  bindtap="handleTap"
+>
+  <text class="action-btn__icon">{{icon}}</text>
+  <text class="action-btn__label">{{label}}</text>
+  <text class="action-btn__cost">{{costLabel}}</text>
+</view>

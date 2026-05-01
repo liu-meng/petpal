@@ -1,0 +1,160 @@
+.pet-avatar {
+  position: relative;
+  display: block;
+}
+
+.pet-avatar__layer {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.pet-avatar__image {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.pet-avatar__fallback {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  min-width: 80rpx;
+  padding: 8rpx 16rpx;
+  border-radius: 999rpx;
+  border: 2rpx dashed rgba(115, 92, 60, 0.35);
+  background: rgba(255, 247, 230, 0.88);
+  color: #735c3c;
+  font-size: 20rpx;
+  line-height: 1;
+  text-align: center;
+  text-transform: uppercase;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.pet-avatar__layer--base .pet-avatar__fallback {
+  background: rgba(255, 213, 128, 0.92);
+}
+
+.pet-avatar__layer--face .pet-avatar__fallback {
+  background: rgba(255, 236, 204, 0.92);
+}
+
+.pet-avatar__layer--pose .pet-avatar__fallback {
+  background: rgba(214, 234, 248, 0.92);
+}
+
+.pet-avatar__layer--fx .pet-avatar__fallback {
+  background: rgba(255, 228, 225, 0.92);
+}
+
+.pet-avatar__layer--accessory .pet-avatar__fallback {
+  background: rgba(231, 239, 255, 0.92);
+}
+
+.pet-avatar__mood--excited {
+  animation-duration: 1.6s;
+}
+
+.pet-avatar__mood--normal {
+  animation-duration: 2.2s;
+}
+
+.pet-avatar__mood--sad {
+  animation-duration: 2.8s;
+}
+
+.pet-avatar__mood--sick {
+  animation-duration: 3.2s;
+}
+
+.pet-avatar__anim--float-happy,
+.pet-avatar__anim--bounce {
+  animation-name: pet-avatar-bounce;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+}
+
+.pet-avatar__anim--float-calm,
+.pet-avatar__anim--float {
+  animation-name: pet-avatar-float;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+}
+
+.pet-avatar__anim--float-sad {
+  animation-name: pet-avatar-droop;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+}
+
+.pet-avatar__anim--float-sick,
+.pet-avatar__anim--recover {
+  animation-name: pet-avatar-sick;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+}
+
+.pet-avatar__anim--wag,
+.pet-avatar__anim--pulse {
+  animation-name: pet-avatar-pulse;
+  animation-duration: 1.1s;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+}
+
+@keyframes pet-avatar-float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-6rpx);
+  }
+}
+
+@keyframes pet-avatar-bounce {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+  }
+
+  50% {
+    transform: translateY(-10rpx) scale(1.02);
+  }
+}
+
+@keyframes pet-avatar-droop {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(8rpx) rotate(-2deg);
+  }
+}
+
+@keyframes pet-avatar-sick {
+  0%, 100% {
+    transform: translateX(0);
+  }
+
+  25% {
+    transform: translateX(-4rpx);
+  }
+
+  75% {
+    transform: translateX(4rpx);
+  }
+}
+
+@keyframes pet-avatar-pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.04);
+  }
+}

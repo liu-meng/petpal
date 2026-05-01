@@ -1,1 +1,46 @@
-<view class="page-placeholder">onboarding placeholder</view>
+<view class="onboarding-page">
+  <view class="onboarding-card">
+    <view class="onboarding-copy">
+      <text class="onboarding-title">你想养一只小狗吗？</text>
+      <text class="onboarding-subtitle">先给它取个名字，PetPal 会陪你一起完成每天的小任务。</text>
+    </view>
+
+    <view class="onboarding-avatar">
+      <pet-avatar
+        species="dog"
+        mood="excited"
+        action="play"
+        hunger="10"
+        happiness="10"
+        size="240"
+      />
+    </view>
+
+    <view class="onboarding-form">
+      <text class="onboarding-label">宠物名字</text>
+      <input
+        class="onboarding-input"
+        type="text"
+        maxlength="12"
+        placeholder="给宠物取个名字..."
+        value="{{name}}"
+        bindinput="handleNameInput"
+      />
+
+      <view class="onboarding-preview">
+        <text class="onboarding-preview__label">预览</text>
+        <text class="onboarding-preview__value">{{name || '旺财'}}</text>
+      </view>
+
+      <button
+        class="onboarding-submit"
+        type="primary"
+        loading="{{submitting}}"
+        disabled="{{submitting}}"
+        bindtap="handleSubmit"
+      >
+        开始养它！
+      </button>
+    </view>
+  </view>
+</view>
