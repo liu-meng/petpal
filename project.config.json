@@ -4,6 +4,26 @@
   "libVersion": "trial",
   "miniprogramRoot": ".",
   "projectname": "petpal",
+  "packOptions": {
+    "ignore": [
+      {
+        "type": "folder",
+        "value": "assets/images"
+      },
+      {
+        "type": "folder",
+        "value": "assets/wireframes"
+      },
+      {
+        "type": "folder",
+        "value": "docs"
+      },
+      {
+        "type": "file",
+        "value": "HANDOVER.md"
+      }
+    ]
+  },
   "setting": {
     "urlCheck": false,
     "es6": true,

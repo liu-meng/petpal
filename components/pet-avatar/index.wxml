@@ -1,5 +1,6 @@
 <view class="pet-avatar {{renderModel ? 'is-ready' : ''}}" style="{{shellStyle}}">
   <block wx:if="{{renderModel}}">
+    <view class="pet-avatar__shadow pet-avatar__shadow--{{renderModel.anim}}"></view>
     <block wx:for="{{renderModel.layers}}" wx:key="key">
       <view
         class="pet-avatar__layer pet-avatar__layer--{{item.key}} pet-avatar__anim--{{renderModel.anim}} pet-avatar__mood--{{renderModel.mood}}"
@@ -13,7 +14,26 @@
           bindload="onLayerLoad"
           binderror="onLayerError"
         />
-        <view wx:if="{{item.useFallback}}" class="pet-avatar__fallback">{{item.key}}</view>
+        <view wx:if="{{item.useFallback && item.key === 'base'}}" class="pet-avatar__fallback-art pet-avatar__fallback-art--{{renderModel.mood}}">
+          <view class="pet-avatar__dog pet-avatar__dog--{{renderModel.mood}}">
+            <view class="pet-avatar__dog-tail"></view>
+            <view class="pet-avatar__dog-body"></view>
+            <view class="pet-avatar__dog-belly"></view>
+            <view class="pet-avatar__dog-paw pet-avatar__dog-paw--left"></view>
+            <view class="pet-avatar__dog-paw pet-avatar__dog-paw--right"></view>
+            <view class="pet-avatar__dog-head">
+              <view class="pet-avatar__dog-ear pet-avatar__dog-ear--left"></view>
+              <view class="pet-avatar__dog-ear pet-avatar__dog-ear--right"></view>
+              <view class="pet-avatar__dog-eye pet-avatar__dog-eye--left"></view>
+              <view class="pet-avatar__dog-eye pet-avatar__dog-eye--right"></view>
+              <view class="pet-avatar__dog-blush pet-avatar__dog-blush--left"></view>
+              <view class="pet-avatar__dog-blush pet-avatar__dog-blush--right"></view>
+              <view class="pet-avatar__dog-nose"></view>
+              <view class="pet-avatar__dog-mouth"></view>
+              <view wx:if="{{renderModel.mood === 'sick'}}" class="pet-avatar__dog-bandage"></view>
+            </view>
+          </view>
+        </view>
       </view>
     </block>
   </block>

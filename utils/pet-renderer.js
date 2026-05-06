@@ -8,73 +8,73 @@ const DOG_ACTION_CONFIG = {
   idle: {
     pose: null,
     fx: null,
-    anim: 'float',
+    anim: 'idle-normal',
   },
   feed: {
     pose: 'eat',
     fx: 'sparkle',
-    anim: 'bounce',
+    anim: 'action-feed',
   },
   play: {
     pose: 'play',
     fx: 'sparkle',
-    anim: 'wag',
+    anim: 'action-play',
   },
   pet: {
     pose: null,
     fx: 'heart',
-    anim: 'pulse',
+    anim: 'action-pet',
   },
   recover: {
     pose: 'recover',
     fx: 'heal',
-    anim: 'recover',
+    anim: 'action-recover',
   },
 };
 
 const DOG_MOOD_CONFIG = {
   excited: {
     parts: {
-      base: 'dog/base/body-brown.png',
-      face: 'dog/face/excited-smile.png',
-      pose: 'dog/pose/idle-tail-up.png',
-      fx: 'common/fx/confetti.png',
+      base: 'dog/portrait/happy_doge.jpg',
+      face: null,
+      pose: null,
+      fx: null,
       accessory: null,
     },
-    anim: 'float-happy',
+    anim: 'idle-excited',
     bubbleText: '好开心，继续陪我玩吧！',
   },
   normal: {
     parts: {
-      base: 'dog/base/body-brown.png',
-      face: 'dog/face/normal-smile.png',
-      pose: 'dog/pose/idle-neutral.png',
+      base: 'dog/portrait/normal_dog.jpg',
+      face: null,
+      pose: null,
       fx: null,
       accessory: null,
     },
-    anim: 'float-calm',
+    anim: 'idle-normal',
     bubbleText: '今天状态不错，我们一起加油。',
   },
   sad: {
     parts: {
-      base: 'dog/base/body-brown.png',
-      face: 'dog/face/sad-mouth.png',
-      pose: 'dog/pose/idle-droop.png',
-      fx: 'common/fx/droplet.png',
+      base: 'dog/portrait/sad_dog.jpg',
+      face: null,
+      pose: null,
+      fx: null,
       accessory: null,
     },
-    anim: 'float-sad',
+    anim: 'idle-sad',
     bubbleText: '我有点失落，想吃点东西或陪我玩。',
   },
   sick: {
     parts: {
-      base: 'dog/base/body-brown.png',
-      face: 'dog/face/sick-dizzy.png',
-      pose: 'dog/pose/idle-weak.png',
-      fx: 'common/fx/sick-stars.png',
+      base: 'dog/portrait/sick_dog.jpg',
+      face: null,
+      pose: null,
+      fx: null,
       accessory: null,
     },
-    anim: 'float-sick',
+    anim: 'idle-sick',
     bubbleText: '我不太舒服，需要你的照顾。',
   },
 };
@@ -117,11 +117,21 @@ function buildLayer(key, assetPath, index) {
     assetPath,
     src: `/assets/pet/${assetPath}`,
     zIndex: index + 1,
-    useFallback: true,
+    useFallback: false,
   };
 }
 
 function mergeParts(species, moodParts, actionConfig) {
+  if (moodParts.face === null && moodParts.pose === null) {
+    return {
+      base: moodParts.base,
+      face: null,
+      pose: null,
+      fx: null,
+      accessory: moodParts.accessory,
+    };
+  }
+
   return {
     base: moodParts.base,
     face: moodParts.face,

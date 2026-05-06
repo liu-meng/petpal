@@ -2,8 +2,8 @@
 
 > 项目路径：`/Users/liumeng/private/mini_program/petpal`
 > 文档角色：V1 开发唯一执行清单
-> 当前状态：Session A 已完成工程骨架与状态基座，并已通过开发者工具编译验证，后续阶段待实现
-> 最近更新：2026-05-01
+> 当前状态：Session A-F 已完成开发与回填，Session G 已完成 Phase 7 全量验收与 Phase 8 非真机项检查，Session H 已核验当前环境不具备真实 iPhone / Android 真机补测条件，相关项仍待具备设备后执行
+> 最近更新：2026-05-06
 
 ## 1. 使用规则
 
@@ -208,113 +208,115 @@
 目标：实现任务列表、打卡确认、当日状态展示、待审核流转。
 
 交付项：
-- [ ] 实现 `pages/tasks/tasks.*`
-- [ ] 渲染预设任务列表
-- [ ] 隐藏 `enabled=false` 任务
-- [ ] 实现任务点击确认弹窗
-- [ ] 实现 `pending / approved / rejected` 状态流转
-- [ ] 实现“同一任务同一天不可重复打卡”
-- [ ] 实现跨日自动重置任务展示状态
+- [x] 实现 `pages/tasks/tasks.*`
+- [x] 渲染预设任务列表
+- [x] 隐藏 `enabled=false` 任务
+- [x] 实现任务点击确认弹窗
+- [x] 实现 `pending / approved / rejected` 状态流转
+- [x] 实现“同一任务同一天不可重复打卡”
+- [x] 实现跨日自动重置任务展示状态
 
 验证项：
-- [ ] 今日待打卡任务显示为未完成
-- [ ] 确认打卡后显示 `pending`
-- [ ] `pending` 任务不可重复点击
-- [ ] `approved` 任务显示完成态
-- [ ] 被驳回的任务可恢复为待打卡
-- [ ] 跨日后任务列表回到新一天状态
+- [x] 今日待打卡任务显示为未完成
+- [x] 确认打卡后显示 `pending`
+- [x] `pending` 任务不可重复点击
+- [x] `approved` 任务显示完成态
+- [x] 被驳回的任务可恢复为待打卡
+- [x] 跨日后任务列表回到新一天状态
 
 退出标准：
-- [ ] 孩子侧任务闭环可独立运行，只差家长审核入口
+- [x] 孩子侧任务闭环可独立运行，只差家长审核入口
 
 ### Phase 5：家长模式（预计 4h）
 
 目标：实现 PIN、审核列表、批量审核、任务开关。
 
 交付项：
-- [ ] 实现 `pages/parent/parent.*`
-- [ ] 首次进入设置 4 位 PIN
-- [ ] 非首次进入走 PIN 校验
-- [ ] 连续输错 3 次给出提示
-- [ ] 渲染待审核列表
-- [ ] 实现全部通过
-- [ ] 实现全部驳回
-- [ ] 实现任务 `enabled` 开关实时保存
-- [ ] 实现家长审核后同步回写积分与快乐值
+- [x] 实现 `pages/parent/parent.*`
+- [x] 首次进入设置 4 位 PIN
+- [x] 非首次进入走 PIN 校验
+- [x] 连续输错 3 次给出提示
+- [x] 渲染待审核列表
+- [x] 实现全部通过
+- [x] 实现全部驳回
+- [x] 实现任务 `enabled` 开关实时保存
+- [x] 实现家长审核后同步回写积分与快乐值
 
 验证项：
-- [ ] 未设置 PIN 时强制进入设置流程
-- [ ] 已设置 PIN 时必须通过验证才能进入
-- [ ] 全部通过后 `pending` 记录变为 `approved`
-- [ ] 审核通过后积分 `+1`、快乐值 `+1`
-- [ ] 全部驳回后任务恢复可重新打卡
-- [ ] 任务开关刷新后仍然保留
+- [x] 未设置 PIN 时强制进入设置流程
+- [x] 已设置 PIN 时必须通过验证才能进入
+- [x] 全部通过后 `pending` 记录变为 `approved`
+- [x] 审核通过后积分 `+1`、快乐值 `+1`
+- [x] 全部驳回后任务恢复可重新打卡
+- [x] 任务开关刷新后仍然保留
 
 退出标准：
-- [ ] 核心“孩子打卡 -> 家长审核 -> 奖励到账”闭环跑通
+- [x] 核心“孩子打卡 -> 家长审核 -> 奖励到账”闭环跑通
 
 ### Phase 6：动画与视觉收口（预计 3h）
 
 目标：让分层角色系统具备稳定的情绪表现和互动反馈。
 
 交付项：
-- [ ] 为 `excited` 实现明显的开心 idle 动画
-- [ ] 为 `normal` 实现平静 idle 动画
-- [ ] 为 `sad` 实现低落 idle 动画
-- [ ] 为 `sick` 实现虚弱 idle 动画
-- [ ] 为互动动作补充短时反馈动画
-- [ ] 为积分变化补充飘字反馈
-- [ ] 为按钮补充点击反馈
-- [ ] 压缩和整理角色素材，控制图片尺寸与命名规范
+- [x] 为 `excited` 实现明显的开心 idle 动画
+- [x] 为 `normal` 实现平静 idle 动画
+- [x] 为 `sad` 实现低落 idle 动画
+- [x] 为 `sick` 实现虚弱 idle 动画
+- [x] 为互动动作补充短时反馈动画
+- [x] 为积分变化补充飘字反馈
+- [x] 为按钮补充点击反馈
+- [x] 压缩和整理角色素材，控制图片尺寸与命名规范
 
 验证项：
-- [ ] 四种情绪视觉差异明显
-- [ ] 互动动作后存在立即可感知反馈
-- [ ] 低端设备上无明显掉帧
-- [ ] 图片资源不会造成明显首屏卡顿
+- [x] 四种情绪视觉差异明显
+- [x] 互动动作后存在立即可感知反馈
+- [x] 低端设备上无明显掉帧
+- [x] 图片资源不会造成明显首屏卡顿
 
 退出标准：
-- [ ] 角色表现不再依赖整图切换，且视觉层级稳定
+- [x] 角色表现不再依赖整图切换，且视觉层级稳定
 
 ### Phase 7：集成测试与验收（预计 2-3h）
 
 目标：严格按产品验收路径完成全链路测试。
 
 交付项：
-- [ ] 执行首次设置验收
-- [ ] 执行衰减验收
-- [ ] 执行任务打卡验收
-- [ ] 执行家长审核验收
-- [ ] 执行互动消耗验收
-- [ ] 执行生病恢复验收
-- [ ] 执行 PIN 验收
-- [ ] 执行离线衰减验收
-- [ ] 执行刷新持久化验收
+- [x] 执行首次设置验收
+- [x] 执行衰减验收
+- [x] 执行任务打卡验收
+- [x] 执行家长审核验收
+- [x] 执行互动消耗验收
+- [x] 执行生病恢复验收
+- [x] 执行 PIN 验收
+- [x] 执行离线衰减验收
+- [x] 执行刷新持久化验收
 
 验证项：
-- [ ] 验收场景 1：首次打开输入名字后进入首页
-- [ ] 验收场景 2：等待或模拟时间后宠物状态下降
-- [ ] 验收场景 3：点击刷牙后进入待审核
-- [ ] 验收场景 4：家长审核通过后积分到账
-- [ ] 验收场景 5：积分为 1 时喂食后归 0
-- [ ] 验收场景 6：状态过低时进入 sick，互动后恢复
-- [ ] 验收场景 7：设置 PIN 后再次进入需验证
-- [ ] 验收场景 8：离线一段时间后再次打开会衰减
-- [ ] 验收场景 9：刷新页面后数据保留
+- [x] 验收场景 1：首次打开输入名字后进入首页
+- [x] 验收场景 2：等待或模拟时间后宠物状态下降
+- [x] 验收场景 3：点击刷牙后进入待审核
+- [x] 验收场景 4：家长审核通过后积分到账
+- [x] 验收场景 5：积分为 1 时喂食后归 0
+- [x] 验收场景 6：状态过低时进入 sick，互动后恢复
+- [x] 验收场景 7：设置 PIN 后再次进入需验证
+- [x] 验收场景 8：离线一段时间后再次打开会衰减
+- [x] 验收场景 9：刷新页面后数据保留
 
 退出标准：
-- [ ] 9 项验收全部通过
+- [x] 9 项验收全部通过
 
 ### Phase 8：真机测试与问题回收（预计 3-4h）
 
 目标：在真实设备上确认儿童可用性、家长操作时长与性能表现。
+
+说明：截至 2026-05-06，本项目仅完成微信开发者工具 `iPhone 14 Pro Max` 模拟器冒烟检查；Session H 已核验当前环境未连接真实 iPhone / Android 设备，且宿主机缺少完整 iOS / Android 真机调试工具链，未实测项保持未勾选。
 
 交付项：
 - [ ] iPhone 真机冒烟测试
 - [ ] Android 真机冒烟测试
 - [ ] 儿童单手操作路径检查
 - [ ] 家长 30 秒审核路径检查
-- [ ] 收集并修复关键问题
+- [x] 收集并修复关键问题
 
 验证项：
 - [ ] 真机页面布局无明显错位
@@ -349,27 +351,27 @@
 
 ### Session D：任务系统
 
-- [ ] 负责 `pages/tasks/`
-- [ ] 负责完成 Phase 4
-- [ ] 依赖 Session A 完成
+- [x] 负责 `pages/tasks/`
+- [x] 负责完成 Phase 4
+- [x] 依赖 Session A 完成
 
 ### Session E：家长模式
 
-- [ ] 负责 `pages/parent/`
-- [ ] 负责完成 Phase 5
-- [ ] 依赖 Session A、Session D 完成
+- [x] 负责 `pages/parent/`
+- [x] 负责完成 Phase 5
+- [x] 依赖 Session A、Session D 完成
 
 ### Session F：动画与素材收口
 
-- [ ] 负责角色动画、交互反馈、素材压缩与命名规范
-- [ ] 负责完成 Phase 6
-- [ ] 依赖 Session B、Session C 完成
+- [x] 负责角色动画、交互反馈、素材压缩与命名规范
+- [x] 负责完成 Phase 6
+- [x] 依赖 Session B、Session C 完成
 
 ### Session G：集成测试与回归
 
-- [ ] 负责 Phase 7、Phase 8
-- [ ] 负责跨页面联调、缺陷回收、本文件最终勾选
-- [ ] 可以修改小范围问题，但不得推翻既有边界
+- [x] 负责 Phase 7、Phase 8
+- [x] 负责跨页面联调、缺陷回收、本文件最终勾选
+- [x] 可以修改小范围问题，但不得推翻既有边界
 
 ## 9. Session 交接模板
 
@@ -432,3 +434,43 @@
 - 风险点：当前 `pet-avatar` 仍主要依赖 Session B 建立的占位素材目录，真实分层 PNG 未入库时首页会继续显示 fallback 层标签；本 session 只实现了入口跳转，`pages/tasks/` 与 `pages/parent/` 仍是占位页，因此主界面入口闭环仅完成到导航层；互动反馈目前以状态更新和短时动作态为主，未进入 Phase 6 的飘字和更强动画收口
 - 验证结果：已通过本地 Node 脚本模拟验证首次打开进入 onboarding、命名后写入 `petpal_state` 并跳转首页、已初始化后不再返回 onboarding、首页加载时能基于当前状态渲染待办任务数；已验证 `feed` 执行后积分 `-1` 且饱食度 `+3`、`play` 执行后积分 `-1` 且快乐值 `+2`、`pet` 执行后快乐值 `+1`；已验证积分归零后喂食/玩耍按钮保持禁用态并给出“积分不够了，先去完成任务吧！”提示；已额外校验四个新增/更新的 `.json` 配置文件可正常解析
 - 是否可交给下一个 session：是
+
+### Session D 回填
+- 日期：2026-05-01
+- 改动文件：`pages/tasks/tasks.js`、`pages/tasks/tasks.wxml`、`pages/tasks/tasks.wxss`、`utils/state.js`、`docs/PetPal-Execution-Checklist.md`
+- 完成项：完成任务页列表渲染与样式实现；按当前 `tasks` 预设渲染今日任务并隐藏 `enabled=false` 项；接入任务点击确认弹窗；完成 `pending / approved / rejected` 状态展示与同日不可重复打卡约束；实现 `rejected -> pending` 重提交流转与按日期自动重置当天展示；补充 `utils/state.js` 的按任务按日期读写辅助，并同步回填 Phase 4 和 Session D 勾选状态
+- 风险点：当前 `pages/tasks/` 只负责孩子侧打卡与展示，`pending -> approved / rejected` 的实际审核写回仍依赖后续 Session E 按既有 `checkins` 结构回写；历史 `checkins` 若已存在同一任务同一天的重复脏数据，本次实现会优先读取并覆盖最后一条记录，但不会主动清理旧冗余记录；任务页样式已本地通过逻辑模拟校验，但尚未在微信开发者工具做视觉联调
+- 验证结果：已通过 `node --check pages/tasks/tasks.js`、`node --check utils/state.js`、`node --check pages/index/index.js` 做语法校验；已通过本地 Node 脚本模拟验证任务页首次渲染仅显示 5 个启用任务、确认打卡后状态写为 `pending`、`pending` 同日不可重复提交、`approved` 显示完成态、`rejected` 可在同日重新提交为 `pending`、`requireConfirm=false` 任务可直接 `approved` 并发放积分/快乐值、跨日定时刷新后任务展示回到新一天状态
+- 是否可交给下一个 session：是
+
+### Session E 回填
+- 日期：2026-05-01
+- 改动文件：`pages/parent/parent.js`、`pages/parent/parent.wxml`、`pages/parent/parent.wxss`、`docs/PetPal-Execution-Checklist.md`
+- 完成项：完成家长模式页的 `PIN 设置 -> PIN 校验 -> 家长面板` 流转；首次进入要求设置 4 位 PIN，非首次进入要求 PIN 验证，连续输错 3 次给出提示；按当前 `checkins` 结构渲染全部待审核列表并实现“全部通过 / 全部驳回”；实现任务 `enabled` 开关的实时保存；审核通过后按任务分值回写 `points / pet.totalPointsEarned`，并按通过条数回写 `pet.happiness`；同步回填 Phase 5 和 Session E 勾选状态
+- 风险点：当前 PIN 继续按既有 `petpal_state.parentPin` 结构保存在本地 storage，满足兼容性但不提供加密和找回；“全部通过 / 全部驳回” 会处理 storage 中所有 `pending` 记录，不只限定当天，这样可以兼容跨日未审核任务，但也意味着批量操作前需要确认列表内容；连续输错 3 次目前仅给出提示，不做冷却或锁定，这是按本阶段最小需求实现
+- 验证结果：已通过 `node --check pages/parent/parent.js` 做语法校验；已通过本地 Node 脚本模拟验证未设置 PIN 时进入设置流程、设置 PIN 后进入家长面板、再次进入必须先验证 PIN、连续输错 3 次会触发提示、全部通过后 `pending -> approved` 且积分与快乐值同步增加、全部驳回后 `pending -> rejected` 且不发放奖励、任务 `enabled` 开关写入 storage 后重新读取仍然保留
+- 是否可交给下一个 session：是
+
+### Session F 回填
+- 日期：2026-05-02
+- 改动文件：`components/pet-avatar/index.wxml`、`components/pet-avatar/index.wxss`、`components/action-btn/index.wxml`、`components/action-btn/index.wxss`、`pages/index/index.js`、`pages/index/index.wxml`、`pages/index/index.wxss`、`utils/pet-renderer.js`、`assets/pet/README.md`、`docs/PetPal-Execution-Checklist.md`
+- 完成项：为 `excited / normal / sad / sick` 四种情绪补齐明显可区分的 idle 动画节奏与阴影变化；为 `feed / play / pet / recover` 补齐短时动作反馈动画，并保持与现有 `pet-avatar` 分层渲染结构兼容；在首页接入积分飘字与属性反馈飘字；为互动按钮补齐按压反馈；补充 `assets/pet/README.md` 中的素材尺寸与命名约束；同步回填 Phase 6 与 Session F 勾选状态
+- 风险点：当前真实 PNG 素材仍未入库，四类情绪差异主要依赖容器动画、阴影和 fallback 层共同呈现，真实素材接入后仍需在开发者工具或真机复查锚点与节奏；`recover` 动画目前通过首页在 `sick -> 非 sick` 的状态跃迁时串行触发，若后续业务新增更多恢复入口，需要复用同样的页面动作排队逻辑；低端设备“无明显掉帧”当前基于实现策略与本地逻辑校验判定，尚未完成真机性能验证
+- 验证结果：已通过 `node --check pages/index/index.js`、`node --check components/pet-avatar/index.js`、`node --check components/action-btn/index.js`、`node --check utils/pet-renderer.js` 做语法校验；已通过本地 Node 沙盒模拟验证首页在 `sick` 状态下执行 `feed` 后会按顺序进入 `feed -> recover -> idle` 动作态，且积分从 `2` 变为 `1`、飘字反馈依次显示 `-1 分`、`+3 饱食`、`恢复精神`；已额外验证 `play` 会立刻进入 `action-play` 且积分 `-1`、快乐值 `+2`、显示 `-1 分 / +2 快乐`，`pet` 会立刻进入 `action-pet` 且保持积分不变、显示 `+1 快乐`，禁用态 `feed` 会维持 `idle` 并弹出“积分不够了，先去完成任务吧！”；已验证 `utils/pet-renderer.js` 在四种情绪下分别输出 `idle-excited / idle-normal / idle-sad / idle-sick`，在动作态下分别输出 `action-feed / action-play / action-pet / action-recover`；已确认本次未进入 `pages/tasks/`、`pages/parent/` 与 Phase 7 之后范围
+- 是否可交给下一个 session：是
+
+### Session G 回填
+- 日期：2026-05-02
+- 改动文件：`docs/PetPal-Execution-Checklist.md`
+- 完成项：完成 Phase 7 的 9 个验收场景并全部通过；完成跨页面联调，覆盖 `pages/onboarding/onboarding`、`pages/index/index`、`pages/tasks/tasks`、`pages/parent/parent` 与 `utils/state.js`、`utils/decay.js` 的关键状态流转；补充微信开发者工具 `iPhone 14 Pro Max` 模拟器下的首页、任务页、家长页冒烟检查；同步回填 Phase 7、Phase 8、Session G 勾选与当前文档状态
+- 风险点：当前环境未连接真实 iPhone / Android 设备，Phase 8 的真机冒烟、真机布局、真机动画与“30 秒审核路径”仍待实机补测；首页角色当前仍依赖 `pet-avatar` fallback 层展示占位文案，真实 PNG 分层素材接入后需复查视觉与性能；微信开发者工具代码质量面板仍存在主包尺寸 / 图片资源相关告警，本次未纳入 Phase 7 / 8 阻断修复范围
+- 验证结果：已通过 `node --check pages/onboarding/onboarding.js`、`node --check pages/index/index.js`、`node --check pages/tasks/tasks.js`、`node --check pages/parent/parent.js`、`node --check utils/state.js`、`node --check utils/decay.js` 做语法校验；已通过本地 Node 沙盒完成 Phase 7 九个验收场景验证，覆盖首次设置、时间衰减、刷牙待审核、家长审核奖励、积分消耗归零、`sick -> feed -> recover` 恢复链路、PIN 二次进入校验、离线衰减、刷新持久化，结果全部通过；已在微信开发者工具 `iPhone 14 Pro Max` 模拟器中确认 `pages/index/index`、`pages/tasks/tasks`、`pages/parent/parent` 可正常进入，当前未见明显布局错位；未连接真实 iPhone / Android 设备，相关 Phase 8 真机项本次未勾选
+- 是否可进入交付或下一轮迭代：可进入下一轮迭代；直接交付前需补 iPhone / Android 真机测试
+
+### Session H 回填
+- 日期：2026-05-06
+- 改动文件：`project.config.json`、`utils/pet-renderer.js`、`components/pet-avatar/index.wxml`、`components/pet-avatar/index.wxss`、`assets/pet/dog/portrait/happy_doge.jpg`、`assets/pet/dog/portrait/normal_dog.jpg`、`assets/pet/dog/portrait/sad_dog.jpg`、`assets/pet/dog/portrait/sick_dog.jpg`、`assets/pet/README.md`、`docs/PetPal-Execution-Checklist.md`
+- 完成项：按 Session H 顺序先核对当前工作区未提交改动与 `Phase 8` 未完成项；复查微信开发者工具当前项目与 `iPhone 14 Pro Max` 模拟器状态；补充真实 `iPhone / Android` 真机补测条件核验结论；在收到真机调试 `80051` 报错后，定位并修复真机调试源码包超限问题；在收到“宠物形象未展示”反馈后，定位到 `assets/pet/` 缺少真实分层 PNG、`utils/pet-renderer.js` 仍指向不存在文件；基于现有 4 张情绪源图生成轻量运行时主体图，并让渲染器按 `mood` 直接显示真实宠物主体；在收到“宠物前面有覆盖物”反馈后，定位到 fallback 默认开启导致前景遮挡，并改为仅在图片加载失败时显示 fallback；保留 `pet-avatar` 组件内的绘制 fallback 作为更低一级兜底；保持 `iPhone 真机冒烟测试`、`Android 真机冒烟测试`、`儿童单手操作路径检查`、`家长 30 秒审核路径检查`、`真机页面布局无明显错位`、`角色动画在真机上可正常运行`、`家长审核流程可在 30 秒内完成`、`无阻断交付的 P0 缺陷`、`可进入交付或下一轮迭代` 等未实测项未勾选；新增本次阻塞说明、缺陷修复记录与交付判断
+- 风险点：当前宿主机仅安装 Command Line Tools，未安装完整 Xcode，`xcrun devicectl` / `xcrun xctrace` 不可用；当前环境无 `adb`、无 `idevice_id` / `ideviceinfo` / `ios-deploy`，且系统 USB 枚举未发现真实 `iPhone / Android` 设备，因此无法客观完成真实 iPhone / Android 冒烟、儿童单手路径与家长 `30 秒` 审核路径检查；本次通过 `project.config.json` 的 `packOptions.ignore` 排除了未参与运行时的原始 PNG、wireframe 与文档资源，若后续页面重新直接引用 `assets/images/` 或 `docs/` 下文件，需要同步调整打包策略；当前 `dog/portrait/` 是为 `Phase 8` 真机可见性补的轻量单图主体资源，不是真正的最终分层素材，后续若补齐 `base / face / pose / fx` 真实图层，需要重新校准锚点与动画层次；当前 fallback 改为“仅报错时显示”，如果后续主体图改回远程图或超大本地图，首屏加载慢时会先短暂显示空白而不是覆盖占位；源图右下角原始水印在圆形裁切下当前未明显露出，但正式交付前仍建议替换为无水印自有素材
+- 验证结果：已执行 `git status --short --branch` 确认当前分支为 `main` 且工作区存在既有未提交改动，本次未回退或覆盖；已读取 `docs/PetPal-Execution-Checklist.md` 的 `Phase 8` 与 `Session G` 回填内容确认真机项原本未完成；已执行 `xcode-select -p` 确认当前仅指向 `/Library/Developer/CommandLineTools`，并通过 `xcrun devicectl list devices`、`xcrun xctrace list devices` 验证当前缺少完整 iOS 真机调试工具；已执行 `adb devices -l`、`which idevice_id ideviceinfo ios-deploy`、`system_profiler SPUSBDataType` 验证当前无 Android 调试链路、无 iOS 设备工具且未识别到真实手机；已在微信开发者工具中打开 `真机调试` 面板，确认当前仅能进入二维码真机调试入口，未形成可验证的真实 iPhone / Android 连接会话；已针对 `Error 80051: source size 13742KB exceed max limit 2MB` 做根因定位，确认 `assets/images/` 下 4 张未被运行时代码引用的原始 PNG 合计约 `13MB`，与真机调试报错体积一致；已在 `project.config.json` 中新增 `packOptions.ignore`，排除 `assets/images`、`assets/wireframes`、`docs` 与 `HANDOVER.md`；已本地校验 `project.config.json` 可正常解析，并按忽略规则复算当前预计上传体积约为 `0.24MB`；已把 4 张 `2048x2048` 源图压缩为 `512x512` 轻量 JPG，输出到 `assets/pet/dog/portrait/`，总计约 `160KB`；已验证 `utils/pet-renderer.js` 在四种情绪下均输出存在的 `base` 层路径；已在微信开发者工具 `iPhone 14 Pro Max` 模拟器中确认首页宠物主体恢复可见，不再出现“仅有 FX 占位、宠物主体空白”；已将主体层 fallback 默认值改为关闭，仅在 `binderror` 时回退显示，避免兜底绘制覆盖真实宠物主体
+- 是否可进入交付或下一轮迭代：可进入下一轮迭代；不可标记为可直接交付，需在真实 `iPhone` 与真实 `Android` 连接条件具备后补完 `Phase 8` 全部未勾选项，再重新判断是否可交付
