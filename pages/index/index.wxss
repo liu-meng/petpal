@@ -61,6 +61,7 @@
 }
 
 .index-pet-avatar {
+  position: relative;
   min-height: 320rpx;
   display: flex;
   align-items: center;
@@ -88,6 +89,7 @@
 }
 
 .index-points-card {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -96,6 +98,7 @@
   border-radius: 30rpx;
   background: linear-gradient(135deg, #fff4c7 0%, #ffe09b 100%);
   color: #6e4f1e;
+  overflow: hidden;
 }
 
 .index-points-card__label {
@@ -106,6 +109,40 @@
 .index-points-card__value {
   font-size: 34rpx;
   font-weight: 700;
+}
+
+.index-float-text {
+  position: absolute;
+  left: 50%;
+  pointer-events: none;
+  white-space: nowrap;
+  transform: translateX(-50%);
+  animation-duration: 1.4s;
+  animation-timing-function: ease-out;
+  animation-fill-mode: forwards;
+}
+
+.index-float-text--stat {
+  top: 16rpx;
+  padding: 10rpx 20rpx;
+  border-radius: 999rpx;
+  background: rgba(255, 255, 255, 0.92);
+  color: #ff7f50;
+  font-size: 24rpx;
+  font-weight: 700;
+  box-shadow: 0 12rpx 24rpx rgba(255, 156, 112, 0.16);
+  animation-name: index-float-up-center;
+}
+
+.index-float-text--points {
+  right: 28rpx;
+  left: auto;
+  top: 18rpx;
+  color: #d97b1f;
+  font-size: 24rpx;
+  font-weight: 700;
+  transform: translateY(0);
+  animation-name: index-float-up-right;
 }
 
 .index-task-entry {
@@ -164,4 +201,36 @@
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 16rpx;
   margin-top: 24rpx;
+}
+
+@keyframes index-float-up-center {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(12rpx) scale(0.94);
+  }
+
+  20% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-42rpx) scale(1.04);
+  }
+}
+
+@keyframes index-float-up-right {
+  0% {
+    opacity: 0;
+    transform: translateY(12rpx) scale(0.94);
+  }
+
+  20% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(-42rpx) scale(1.04);
+  }
 }

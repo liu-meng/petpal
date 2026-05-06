@@ -10,6 +10,7 @@
   border-radius: 30rpx;
   background: linear-gradient(180deg, #fff8e7 0%, #ffe7b4 100%);
   box-shadow: 0 16rpx 32rpx rgba(210, 157, 68, 0.14);
+  transition: transform 120ms ease, box-shadow 120ms ease, opacity 120ms ease;
 }
 
 .action-btn.is-disabled {
@@ -18,14 +19,24 @@
   opacity: 0.7;
 }
 
+.action-btn--pressing {
+  transform: translateY(4rpx) scale(0.98);
+  box-shadow: 0 8rpx 20rpx rgba(210, 157, 68, 0.1);
+}
+
 .action-btn__icon {
   font-size: 42rpx;
+  transition: transform 120ms ease;
 }
 
 .action-btn__label {
   font-size: 28rpx;
   font-weight: 700;
   color: #5d4524;
+}
+
+.action-btn--pressing .action-btn__icon {
+  transform: scale(0.94);
 }
 
 .action-btn.is-disabled .action-btn__label,

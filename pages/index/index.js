@@ -31,6 +31,26 @@ const ACTION_EFFECTS = {
 };
 
 const ACTION_ANIMATION_DURATION = 1200;
+const SCORE_FLOAT_DURATION = 1400;
+
+const ACTION_FEEDBACK = {
+  feed: {
+    pointsDelta: -1,
+    statDelta: '+3 饱食',
+  },
+  play: {
+    pointsDelta: -1,
+    statDelta: '+2 快乐',
+  },
+  pet: {
+    pointsDelta: 0,
+    statDelta: '+1 快乐',
+  },
+  recover: {
+    pointsDelta: 0,
+    statDelta: '恢复精神',
+  },
+};
 
 function cloneState(state) {
   return JSON.parse(JSON.stringify(state));
@@ -119,9 +139,16 @@ Page({
     pendingTaskCount: 0,
     feedDisabled: true,
     playDisabled: true,
+    pointsFloatText: '',
+    pointsFloatVisible: false,
+    statFloatText: '',
+    statFloatVisible: false,
   },
 
   actionResetTimer: null,
+  pointsFloatTimer: null,
+  statFloatTimer: null,
+  recoverFeedbackTimer: null,
 
   onLoad() {
     this.syncPageState();
@@ -133,6 +160,7 @@ Page({
 
   onUnload() {
     this.clearActionResetTimer();
+    this.clearFeedbackTimers();
   },
 
   syncPageState() {
@@ -179,12 +207,72 @@ Page({
     }
   },
 
-  scheduleActionReset() {
+  clearFeedbackTimers() {
+    if (this.recoverFeedbackTimer) {
+      clearTimeout(this.recoverFeedbackTimer);
+      this.recoverFeedbackTimer = null;
+    }
+
+    if (this.pointsFloatTimer) {
+      clearTimeout(this.pointsFloatTimer);
+      this.pointsFloatTimer = null;
+    }
+
+    if (this.statFloatTimer) {
+      clearTimeout(this.statFloatTimer);
+      this.statFloatTimer = null;
+    }
+  },
+
+  scheduleActionReset(nextAction) {
     this.clearActionResetTimer();
     this.actionResetTimer = setTimeout(() => {
       this.actionResetTimer = null;
+      if (nextAction) {
+        this.applyViewState(getState(), nextAction);
+        this.scheduleActionReset();
+        return;
+      }
+
       this.applyViewState(getState(), 'idle');
     }, ACTION_ANIMATION_DURATION);
+  },
+
+  showFloatFeedback(actionKey) {
+    const feedback = ACTION_FEEDBACK[actionKey];
+
+    if (!feedback) {
+      return;
+    }
+
+    this.clearFeedbackTimers();
+
+    this.setData({
+      pointsFloatText: feedback.pointsDelta === 0
+        ? ''
+        : `${feedback.pointsDelta > 0 ? '+' : ''}${feedback.pointsDelta} 分`,
+      pointsFloatVisible: feedback.pointsDelta !== 0,
+      statFloatText: feedback.statDelta,
+      statFloatVisible: !!feedback.statDelta,
+    });
+
+    if (feedback.pointsDelta !== 0) {
+      this.pointsFloatTimer = setTimeout(() => {
+        this.pointsFloatTimer = null;
+        this.setData({
+          pointsFloatVisible: false,
+        });
+      }, SCORE_FLOAT_DURATION);
+    }
+
+    if (feedback.statDelta) {
+      this.statFloatTimer = setTimeout(() => {
+        this.statFloatTimer = null;
+        this.setData({
+          statFloatVisible: false,
+        });
+      }, SCORE_FLOAT_DURATION);
+    }
   },
 
   handleActionTap(event) {
@@ -206,6 +294,10 @@ Page({
     const effect = ACTION_EFFECTS[actionKey];
     const currentState = getState();
     const decayedState = decayState(currentState, Date.now());
+    const previousMood = getMood(decayedState.pet.hunger, decayedState.pet.happiness);
+
+    this.clearActionResetTimer();
+    this.clearFeedbackTimers();
 
     if (effect.pointsCost > 0 && decayedState.points < effect.pointsCost) {
       const savedState = saveState(decayedState);
@@ -237,13 +329,23 @@ Page({
 
     const savedState = saveState(nextState);
     const app = getApp();
+    const nextMood = getMood(savedState.pet.hunger, savedState.pet.happiness);
+    const queuedAction = previousMood === 'sick' && nextMood !== 'sick' ? 'recover' : '';
 
     if (app && app.globalData) {
       app.globalData.state = savedState;
     }
 
     this.applyViewState(savedState, effect.action);
-    this.scheduleActionReset();
+    this.showFloatFeedback(effect.action);
+    this.scheduleActionReset(queuedAction);
+
+    if (queuedAction) {
+      this.recoverFeedbackTimer = setTimeout(() => {
+        this.recoverFeedbackTimer = null;
+        this.showFloatFeedback(queuedAction);
+      }, ACTION_ANIMATION_DURATION);
+    }
   },
 
   handleGoTasks() {

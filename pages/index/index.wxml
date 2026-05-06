@@ -20,6 +20,10 @@
         happiness="{{pet.happiness}}"
         size="280"
       />
+      <text
+        wx:if="{{statFloatVisible}}"
+        class="index-float-text index-float-text--stat"
+      >{{statFloatText}}</text>
     </view>
     <view class="index-bubble">{{bubbleText}}</view>
   </view>
@@ -44,6 +48,10 @@
   <view class="index-points-card">
     <text class="index-points-card__label">💰 积分</text>
     <text class="index-points-card__value">{{points}} 分</text>
+    <text
+      wx:if="{{pointsFloatVisible}}"
+      class="index-float-text index-float-text--points"
+    >{{pointsFloatText}}</text>
   </view>
 
   <view class="index-task-entry" bindtap="handleGoTasks">

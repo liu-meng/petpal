@@ -104,17 +104,90 @@ function getTodayCheckins(dateLike) {
   return state.checkins.filter((checkin) => checkin && checkin.date === targetDate);
 }
 
+function getTaskCheckin(taskId, dateLike, stateLike) {
+  const state = stateLike ? normalizeState(stateLike) : getState();
+  const targetDate = formatDate(dateLike || Date.now());
+  const checkins = Array.isArray(state.checkins) ? state.checkins : [];
+
+  for (let index = checkins.length - 1; index >= 0; index -= 1) {
+    const checkin = checkins[index];
+
+    if (checkin && checkin.taskId === taskId && checkin.date === targetDate) {
+      return checkin;
+    }
+  }
+
+  return null;
+}
+
 function getTodayTaskStatus(taskId, dateLike) {
-  return getTodayCheckins(dateLike).find((checkin) => checkin.taskId === taskId) || null;
+  return getTaskCheckin(taskId, dateLike);
+}
+
+function setTaskCheckinStatus(taskId, status, options) {
+  const config = isObject(options) ? options : {};
+  const now = typeof config.now === 'number' ? config.now : Date.now();
+  const targetDate = formatDate(
+    Object.prototype.hasOwnProperty.call(config, 'dateLike') ? config.dateLike : now
+  );
+  const state = getState();
+  const checkins = Array.isArray(state.checkins)
+    ? state.checkins.map((checkin) => Object.assign({}, checkin))
+    : [];
+  let checkinIndex = -1;
+
+  for (let index = checkins.length - 1; index >= 0; index -= 1) {
+    const checkin = checkins[index];
+
+    if (checkin && checkin.taskId === taskId && checkin.date === targetDate) {
+      checkinIndex = index;
+      break;
+    }
+  }
+  const previousCheckin = checkinIndex >= 0 ? checkins[checkinIndex] : null;
+  const hasCreatedAt = Object.prototype.hasOwnProperty.call(config, 'createdAt');
+  const hasConfirmedAt = Object.prototype.hasOwnProperty.call(config, 'confirmedAt');
+
+  const nextCheckin = Object.assign({}, previousCheckin, {
+    taskId,
+    date: targetDate,
+    status,
+    createdAt: hasCreatedAt
+      ? config.createdAt
+      : (
+        previousCheckin &&
+        typeof previousCheckin.createdAt === 'number' &&
+        !(status === 'pending' && previousCheckin.status === 'rejected')
+      )
+        ? previousCheckin.createdAt
+        : now,
+    confirmedAt: status === 'pending'
+      ? null
+      : hasConfirmedAt
+        ? config.confirmedAt
+        : now,
+  });
+
+  if (checkinIndex >= 0) {
+    checkins[checkinIndex] = nextCheckin;
+  } else {
+    checkins.push(nextCheckin);
+  }
+
+  return saveState(Object.assign({}, state, {
+    checkins,
+  }));
 }
 
 module.exports = {
   DEFAULT_TASKS,
   createDefaultState,
   getState,
+  getTaskCheckin,
   getTodayCheckins,
   getTodayTaskStatus,
   initializeState,
   resetState,
   saveState,
+  setTaskCheckinStatus,
 };

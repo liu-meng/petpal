@@ -1,5 +1,8 @@
 <view
   class="action-btn {{disabled ? 'is-disabled' : ''}}"
+  hover-class="{{disabled ? '' : 'action-btn--pressing'}}"
+  hover-start-time="0"
+  hover-stay-time="90"
   bindtap="handleTap"
 >
   <text class="action-btn__icon">{{icon}}</text>

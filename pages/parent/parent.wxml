@@ -1,1 +1,124 @@
-<view class="page-placeholder">parent placeholder</view>
+<view class="parent-page">
+  <view class="parent-hero">
+    <text class="parent-hero__emoji">🔒</text>
+    <text class="parent-hero__title">家长模式</text>
+    <text class="parent-hero__desc">
+      {{authMode === 'panel' ? '审核孩子打卡并管理任务开关' : authMode === 'setup' ? '首次进入请先设置 4 位 PIN' : '请输入 4 位 PIN 继续'}}
+    </text>
+  </view>
+
+  <view wx:if="{{authMode !== 'panel'}}" class="parent-card parent-auth-card">
+    <text class="parent-card__title">{{authMode === 'setup' ? '设置家长 PIN' : '验证家长 PIN'}}</text>
+    <text class="parent-card__desc">
+      {{authMode === 'setup' ? 'PIN 只保存在本机 storage，用于进入家长模式。' : '已设置 PIN，验证通过后才能进入家长面板。'}}
+    </text>
+
+    <input
+      class="parent-pin-input"
+      type="number"
+      password
+      maxlength="4"
+      placeholder="请输入 4 位数字"
+      value="{{pinValue}}"
+      bindinput="handlePinInput"
+      bindconfirm="handlePinSubmit"
+      focus
+    />
+
+    <text
+      wx:if="{{authMode === 'verify' && failedAttempts > 0}}"
+      class="parent-auth-card__hint {{failedAttempts >= 3 ? 'is-warning' : ''}}"
+    >
+      已连续输错 {{failedAttempts}} 次
+    </text>
+
+    <button
+      class="parent-auth-card__button"
+      disabled="{{!canSubmitPin}}"
+      bindtap="handlePinSubmit"
+    >
+      {{authMode === 'setup' ? '保存 PIN' : '验证进入'}}
+    </button>
+  </view>
+
+  <block wx:else>
+    <view class="parent-card parent-summary-card">
+      <view class="parent-summary-card__item">
+        <text class="parent-summary-card__label">待审核</text>
+        <text class="parent-summary-card__value">{{pendingCount}} 条</text>
+      </view>
+      <view class="parent-summary-card__item">
+        <text class="parent-summary-card__label">已启用任务</text>
+        <text class="parent-summary-card__value">{{enabledTaskCount}} / {{taskCount}}</text>
+      </view>
+    </view>
+
+    <view class="parent-card">
+      <view class="parent-section__head">
+        <view>
+          <text class="parent-card__title">待审核列表</text>
+          <text class="parent-card__desc">审核通过会同步发放积分和快乐值，驳回后孩子可以重新打卡。</text>
+        </view>
+        <text class="parent-section__count">{{pendingCount}} 条</text>
+      </view>
+
+      <view wx:if="{{pendingCount > 0}}" class="parent-bulk-actions">
+        <button class="parent-bulk-actions__button is-approve" bindtap="handleApproveAll">全部通过</button>
+        <button class="parent-bulk-actions__button is-reject" bindtap="handleRejectAll">全部驳回</button>
+      </view>
+
+      <view wx:if="{{pendingCount > 0}}" class="parent-pending-list">
+        <view wx:for="{{pendingCheckins}}" wx:key="key" class="parent-pending-item">
+          <view class="parent-pending-item__main">
+            <text class="parent-pending-item__icon">{{item.icon}}</text>
+            <view class="parent-pending-item__content">
+              <view class="parent-pending-item__title-row">
+                <text class="parent-pending-item__label">{{item.label}}</text>
+                <text wx:if="{{item.taskTag}}" class="parent-pending-item__tag">{{item.taskTag}}</text>
+              </view>
+              <text class="parent-pending-item__meta">{{item.date}} · +{{item.points}} 分</text>
+            </view>
+          </view>
+          <text class="parent-pending-item__status">待审核</text>
+        </view>
+      </view>
+
+      <view wx:else class="parent-empty">
+        <text class="parent-empty__emoji">✨</text>
+        <text class="parent-empty__title">当前没有待审核任务</text>
+        <text class="parent-empty__desc">孩子提交新打卡后，这里会自动出现。</text>
+      </view>
+    </view>
+
+    <view class="parent-card">
+      <view class="parent-section__head">
+        <view>
+          <text class="parent-card__title">任务开关</text>
+          <text class="parent-card__desc">切换后会立即写入本地 storage，并影响孩子侧任务展示。</text>
+        </view>
+      </view>
+
+      <view class="parent-task-list">
+        <view wx:for="{{tasks}}" wx:key="id" class="parent-task-item">
+          <view class="parent-task-item__main">
+            <text class="parent-task-item__icon">{{item.icon}}</text>
+            <view class="parent-task-item__content">
+              <text class="parent-task-item__label">{{item.label}}</text>
+              <text class="parent-task-item__meta">+{{item.points}} 分</text>
+            </view>
+          </view>
+
+          <view class="parent-task-item__aside">
+            <text wx:if="{{item.pendingCount > 0}}" class="parent-task-item__pending">待审 {{item.pendingCount}}</text>
+            <switch
+              checked="{{item.enabled}}"
+              color="#efb24a"
+              data-task-id="{{item.id}}"
+              bindchange="handleTaskSwitchChange"
+            />
+          </view>
+        </view>
+      </view>
+    </view>
+  </block>
+</view>
