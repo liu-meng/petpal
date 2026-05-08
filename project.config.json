@@ -19,8 +19,40 @@
         "value": "docs"
       },
       {
+        "type": "folder",
+        "value": "tmp"
+      },
+      {
+        "type": "folder",
+        "value": "assets/pet/concept"
+      },
+      {
+        "type": "folder",
+        "value": "assets/pet/preview"
+      },
+      {
+        "type": "folder",
+        "value": "assets/pet/runtime/dog/model"
+      },
+      {
+        "type": "folder",
+        "value": "assets/pet/dog/portrait"
+      },
+      {
         "type": "file",
         "value": "HANDOVER.md"
+      },
+      {
+        "type": "file",
+        "value": "assets/pet/README.md"
+      },
+      {
+        "type": "file",
+        "value": "assets/pet/runtime/dog/textures/dog_body_base.png"
+      },
+      {
+        "type": "file",
+        "value": "components/pet-avatar/index-placeholder.md"
       }
     ]
   },

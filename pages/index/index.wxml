@@ -11,14 +11,22 @@
   </view>
 
   <view class="index-card index-pet-card">
+    <view class="index-pet-stage-meta">
+      <view class="index-mood-badge">{{moodLabel}}</view>
+      <text class="index-mood-hint">{{moodHint}}</text>
+    </view>
     <view class="index-pet-avatar">
       <pet-avatar
+        id="petAvatar"
         species="{{pet.type}}"
         mood="{{mood}}"
-        action="{{activeAction}}"
         hunger="{{pet.hunger}}"
         happiness="{{pet.happiness}}"
-        size="280"
+        size="420"
+        enableAnimation="{{petAnimationEnabled}}"
+        bind:pettap="handlePetTap"
+        bind:actionstart="handlePetActionStart"
+        bind:actionend="handlePetActionEnd"
       />
       <text
         wx:if="{{statFloatVisible}}"

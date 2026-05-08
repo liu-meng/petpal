@@ -7,7 +7,23 @@ const {
   decayState,
   getMood,
 } = require('../../utils/decay');
+const { getPetRenderModel } = require('../../utils/pet-renderer');
 const { formatDate } = require('../../utils/time');
+
+function shouldEnablePetAnimation() {
+  try {
+    const systemInfo = wx.getSystemInfoSync ? wx.getSystemInfoSync() : {};
+    const benchmarkLevel = Number(systemInfo.benchmarkLevel);
+
+    if (!Number.isNaN(benchmarkLevel) && benchmarkLevel >= 0 && benchmarkLevel < 10) {
+      return false;
+    }
+
+    return true;
+  } catch (error) {
+    return true;
+  }
+}
 
 const ACTION_EFFECTS = {
   feed: {
@@ -30,7 +46,6 @@ const ACTION_EFFECTS = {
   },
 };
 
-const ACTION_ANIMATION_DURATION = 1200;
 const SCORE_FLOAT_DURATION = 1400;
 
 const ACTION_FEEDBACK = {
@@ -49,6 +64,25 @@ const ACTION_FEEDBACK = {
   recover: {
     pointsDelta: 0,
     statDelta: '恢复精神',
+  },
+};
+
+const MOOD_META = {
+  excited: {
+    label: '开心爆棚',
+    hint: '最适合陪它玩一会儿',
+  },
+  normal: {
+    label: '状态稳定',
+    hint: '今天也在等你一起完成任务',
+  },
+  sad: {
+    label: '有点失落',
+    hint: '摸摸它或喂点东西会更快恢复',
+  },
+  sick: {
+    label: '需要照顾',
+    hint: '先补状态，再让它慢慢恢复精神',
   },
 };
 
@@ -75,40 +109,19 @@ function getPendingTaskCount(state) {
   }).length;
 }
 
-function getPetBubbleText(pet) {
-  const sourcePet = pet || {};
-  const hunger = Number(sourcePet.hunger) || 0;
-  const happiness = Number(sourcePet.happiness) || 0;
-  const mood = getMood(hunger, happiness);
-
-  if (mood === 'sick') {
-    return '我不舒服……需要你照顾我';
-  }
-
-  if (hunger <= 2) {
-    return '我好饿……肚子咕咕叫';
-  }
-
-  if (happiness <= 2) {
-    return '我有点不开心……';
-  }
-
-  if (hunger >= 8) {
-    return '我吃饱啦！好幸福～';
-  }
-
-  if (happiness >= 8) {
-    return '我好开心！你是最好的主人！';
-  }
-
-  return '今天过得怎么样？';
-}
-
 function buildViewState(state, activeAction) {
   const sourceState = state || {};
   const pet = sourceState.pet || {};
   const mood = getMood(pet.hunger, pet.happiness);
   const points = Math.max(0, Number(sourceState.points) || 0);
+  const renderModel = getPetRenderModel({
+    species: pet.type,
+    mood,
+    action: activeAction || 'idle',
+    hunger: pet.hunger,
+    happiness: pet.happiness,
+  });
+  const moodMeta = MOOD_META[mood] || MOOD_META.normal;
 
   return {
     state: sourceState,
@@ -117,7 +130,9 @@ function buildViewState(state, activeAction) {
     pet,
     mood,
     activeAction: activeAction || 'idle',
-    bubbleText: getPetBubbleText(pet),
+    bubbleText: renderModel.bubbleText,
+    moodLabel: moodMeta.label,
+    moodHint: moodMeta.hint,
     pendingTaskCount: getPendingTaskCount(sourceState),
     feedDisabled: points < ACTION_EFFECTS.feed.pointsCost,
     playDisabled: points < ACTION_EFFECTS.play.pointsCost,
@@ -136,6 +151,8 @@ Page({
     mood: 'normal',
     activeAction: 'idle',
     bubbleText: '',
+    moodLabel: '',
+    moodHint: '',
     pendingTaskCount: 0,
     feedDisabled: true,
     playDisabled: true,
@@ -143,14 +160,18 @@ Page({
     pointsFloatVisible: false,
     statFloatText: '',
     statFloatVisible: false,
+    petAnimationEnabled: true,
   },
 
-  actionResetTimer: null,
   pointsFloatTimer: null,
   statFloatTimer: null,
-  recoverFeedbackTimer: null,
+  pendingAvatarAction: '',
+  isPetActionPlaying: false,
 
   onLoad() {
+    this.setData({
+      petAnimationEnabled: shouldEnablePetAnimation(),
+    });
     this.syncPageState();
   },
 
@@ -159,7 +180,6 @@ Page({
   },
 
   onUnload() {
-    this.clearActionResetTimer();
     this.clearFeedbackTimers();
   },
 
@@ -194,25 +214,19 @@ Page({
       mood: viewState.mood,
       activeAction: viewState.activeAction,
       bubbleText: viewState.bubbleText,
+      moodLabel: viewState.moodLabel,
+      moodHint: viewState.moodHint,
       pendingTaskCount: viewState.pendingTaskCount,
       feedDisabled: viewState.feedDisabled,
       playDisabled: viewState.playDisabled,
     });
   },
 
-  clearActionResetTimer() {
-    if (this.actionResetTimer) {
-      clearTimeout(this.actionResetTimer);
-      this.actionResetTimer = null;
-    }
+  getPetAvatar() {
+    return this.selectComponent('#petAvatar');
   },
 
   clearFeedbackTimers() {
-    if (this.recoverFeedbackTimer) {
-      clearTimeout(this.recoverFeedbackTimer);
-      this.recoverFeedbackTimer = null;
-    }
-
     if (this.pointsFloatTimer) {
       clearTimeout(this.pointsFloatTimer);
       this.pointsFloatTimer = null;
@@ -224,18 +238,52 @@ Page({
     }
   },
 
-  scheduleActionReset(nextAction) {
-    this.clearActionResetTimer();
-    this.actionResetTimer = setTimeout(() => {
-      this.actionResetTimer = null;
-      if (nextAction) {
-        this.applyViewState(getState(), nextAction);
-        this.scheduleActionReset();
+  playPetAvatarAction(action) {
+    const petAvatar = this.getPetAvatar();
+
+    if (!petAvatar || typeof petAvatar.playAction !== 'function') {
+      return false;
+    }
+
+    return petAvatar.playAction(action);
+  },
+
+  handlePetTap(event) {
+    const detail = event.detail || {};
+
+    this.lastPetTapArea = detail.hitArea || '';
+  },
+
+  handlePetActionStart(event) {
+    const detail = event.detail || {};
+
+    this.isPetActionPlaying = true;
+    this.setData({
+      activeAction: detail.action || 'idle',
+      bubbleText: detail.bubbleText || '',
+    });
+
+    if (detail.action === 'recover') {
+      this.showFloatFeedback('recover');
+    }
+  },
+
+  handlePetActionEnd(event) {
+    const detail = event.detail || {};
+    const nextAction = this.pendingAvatarAction;
+
+    if (nextAction && nextAction !== detail.action) {
+      this.pendingAvatarAction = '';
+      this.isPetActionPlaying = false;
+
+      if (this.playPetAvatarAction(nextAction)) {
         return;
       }
+    }
 
-      this.applyViewState(getState(), 'idle');
-    }, ACTION_ANIMATION_DURATION);
+    this.pendingAvatarAction = '';
+    this.isPetActionPlaying = false;
+    this.applyViewState(getState(), 'idle');
   },
 
   showFloatFeedback(actionKey) {
@@ -291,12 +339,14 @@ Page({
       return;
     }
 
+    if (this.isPetActionPlaying || this.pendingAvatarAction) {
+      return;
+    }
+
     const effect = ACTION_EFFECTS[actionKey];
     const currentState = getState();
     const decayedState = decayState(currentState, Date.now());
     const previousMood = getMood(decayedState.pet.hunger, decayedState.pet.happiness);
-
-    this.clearActionResetTimer();
     this.clearFeedbackTimers();
 
     if (effect.pointsCost > 0 && decayedState.points < effect.pointsCost) {
@@ -338,13 +388,12 @@ Page({
 
     this.applyViewState(savedState, effect.action);
     this.showFloatFeedback(effect.action);
-    this.scheduleActionReset(queuedAction);
+    this.pendingAvatarAction = queuedAction;
 
-    if (queuedAction) {
-      this.recoverFeedbackTimer = setTimeout(() => {
-        this.recoverFeedbackTimer = null;
-        this.showFloatFeedback(queuedAction);
-      }, ACTION_ANIMATION_DURATION);
+    if (!this.playPetAvatarAction(effect.action)) {
+      this.pendingAvatarAction = '';
+      this.isPetActionPlaying = false;
+      this.applyViewState(savedState, 'idle');
     }
   },
 

@@ -60,12 +60,43 @@
   padding: 32rpx 24rpx 28rpx;
 }
 
-.index-pet-avatar {
-  position: relative;
-  min-height: 320rpx;
+.index-pet-stage-meta {
+  width: 100%;
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+
+.index-mood-badge {
+  display: inline-flex;
+  align-items: center;
   justify-content: center;
+  min-height: 48rpx;
+  padding: 0 20rpx;
+  border-radius: 999rpx;
+  font-size: 24rpx;
+  font-weight: 700;
+  background: rgba(255, 186, 87, 0.18);
+  color: #d87419;
+}
+
+.index-mood-hint {
+  flex: 1;
+  min-width: 0;
+  text-align: right;
+  font-size: 22rpx;
+  color: #9b7d4f;
+}
+
+.index-pet-avatar {
+  position: relative;
+  min-height: 440rpx;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  width: 100%;
+  overflow: hidden;
 }
 
 .index-bubble {
