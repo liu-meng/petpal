@@ -614,14 +614,14 @@ Component({
       const isRecover = model.action === 'recover';
       let scaleX = 1 - params.bodyBreath * 0.018 + params.bodyBreath * 0.048 * breathWave;
       let scaleY = 1 + params.bodyBreath * 0.032 - params.bodyBreath * 0.066 * breathWave;
-      let rotation = idleBehavior.look * 0.34 + params.headRotate * 0.08 + idleWave * 0.008;
+      let rotation = idleBehavior.look * 0.32 + params.headRotate * 0.07 + idleWave * 0.006;
       let offsetX = size * idleBehavior.x * 0.56;
       let offsetY = -size * Math.max(0, idleBehavior.y || 0) * 0.42;
-      let headRotation = idleBehavior.look * 0.76 + params.headRotate * 0.22 + breathLag * params.earSwing * 0.034;
-      let headOffsetX = size * idleBehavior.x * 0.22 + idleWave * size * 0.004;
-      let headOffsetY = -size * 0.012 - breathWave * size * 0.01;
-      let headScaleX = 1 + params.bodyBreath * 0.014 * breathLag;
-      let headScaleY = 1 - params.bodyBreath * 0.018 * breathLag;
+      let headRotation = rotation + idleBehavior.look * 0.14 + params.headRotate * 0.06 + breathLag * params.earSwing * 0.012;
+      let headOffsetX = size * idleBehavior.x * 0.1 + idleWave * size * 0.002;
+      let headOffsetY = -size * 0.002 - breathWave * size * 0.002;
+      let headScaleX = 1 + params.bodyBreath * 0.004 * breathLag;
+      let headScaleY = 1 - params.bodyBreath * 0.005 * breathLag;
       let wanderX = 0;
       let wanderY = 0;
       let facingDirection = 1;
@@ -632,16 +632,17 @@ Component({
         const impact = Math.sin(progress * Math.PI);
         const rebound = Math.sin(progress * Math.PI * 2.2) * (1 - progress);
 
-        scaleX += 0.05 * impact;
-        scaleY -= 0.07 * impact;
-        offsetY -= size * 0.03 * impact;
-        rotation += 0.02 * rebound;
-        headRotation += 0.18 * impact - 0.06 * rebound;
-        headOffsetY -= size * 0.048 * impact;
-        headScaleX += 0.028 * impact;
-        headScaleY -= 0.048 * impact;
-        tailEnergy += 0.08 * impact;
-        tailWave += Math.sin(progress * Math.PI * 3.2) * 0.6;
+        scaleX += 0.02 * impact;
+        scaleY -= 0.024 * impact;
+        offsetY += size * 0.01 * impact;
+        rotation += 0.01 * rebound;
+        headRotation += 0.018 * impact - 0.01 * rebound;
+        headOffsetY += size * 0.004 * impact;
+        headOffsetX += size * 0.0015 * rebound;
+        headScaleX += 0.004 * impact;
+        headScaleY -= 0.004 * impact;
+        tailEnergy += 0.05 * impact;
+        tailWave += Math.sin(progress * Math.PI * 3.2) * 0.35;
       } else if (isTapBody) {
         const sway = Math.sin(progress * Math.PI * 2) * (1 - progress);
 
@@ -649,8 +650,8 @@ Component({
         scaleY += 0.026 * Math.abs(sway);
         offsetX += size * 0.016 * sway;
         rotation += 0.09 * sway;
-        headRotation += 0.064 * sway;
-        headOffsetX += size * 0.01 * sway;
+        headRotation += 0.022 * sway;
+        headOffsetX += size * 0.003 * sway;
         tailEnergy += 0.12 * Math.abs(sway);
         tailWave += sway * 0.42;
       } else if (isFeed) {
@@ -658,8 +659,8 @@ Component({
 
         offsetY += size * 0.006 * Math.abs(nod);
         scaleY += 0.015 * Math.abs(nod);
-        headRotation -= 0.12 * Math.abs(nod);
-        headOffsetY += size * 0.018 * nod;
+        headRotation -= 0.07 * Math.abs(nod);
+        headOffsetY += size * 0.006 * nod;
         tailEnergy += 0.06;
         tailWave += nod * 0.16;
       } else if (isPlay) {
@@ -669,17 +670,17 @@ Component({
         scaleX += 0.035 * Math.abs(bounce);
         scaleY += 0.05 * Math.abs(bounce);
         rotation += 0.03 * Math.sin(progress * Math.PI * 4);
-        headRotation += 0.07 * Math.sin(progress * Math.PI * 4);
-        headOffsetY -= size * 0.022 * Math.abs(bounce);
+        headRotation += 0.028 * Math.sin(progress * Math.PI * 4);
+        headOffsetY -= size * 0.008 * Math.abs(bounce);
         tailEnergy += 0.22;
         tailWave += Math.sin(progress * Math.PI * 4.6) * 0.68;
       } else if (isPet) {
         const settle = Math.sin(progress * Math.PI * 2) * (1 - progress * 0.35);
 
         rotation += 0.04 * settle;
-        headRotation += 0.08 * settle;
-        headOffsetX += size * 0.012 * settle;
-        headOffsetY -= size * 0.01 * Math.abs(settle);
+        headRotation += 0.03 * settle;
+        headOffsetX += size * 0.004 * settle;
+        headOffsetY -= size * 0.003 * Math.abs(settle);
         tailEnergy += 0.1;
         tailWave += settle * 0.28;
       } else if (isRecover) {
@@ -687,8 +688,8 @@ Component({
 
         offsetY -= size * 0.02 * floatUp;
         scaleY += 0.03 * floatUp;
-        headOffsetY -= size * 0.014 * floatUp;
-        headRotation -= 0.02 * floatUp;
+        headOffsetY -= size * 0.004 * floatUp;
+        headRotation -= 0.014 * floatUp;
         tailEnergy += 0.08 * floatUp;
         tailWave += floatUp * 0.22;
       }
