@@ -5,89 +5,30 @@ const {
 } = require('../../utils/state');
 const { clampStat } = require('../../utils/decay');
 const { formatDate } = require('../../utils/time');
-
-function getTaskCheckin(checkins, taskId, date) {
-  const sourceCheckins = Array.isArray(checkins) ? checkins : [];
-
-  for (let index = sourceCheckins.length - 1; index >= 0; index -= 1) {
-    const checkin = sourceCheckins[index];
-
-    if (checkin && checkin.taskId === taskId && checkin.date === date) {
-      return checkin;
-    }
-  }
-
-  return null;
-}
-
-function getStatusMeta(status) {
-  if (status === 'pending') {
-    return {
-      badgeClass: 'is-pending',
-      badgeIcon: '⏳',
-      badgeLabel: '待确认',
-      helperText: '等待家长确认',
-      canCheckin: false,
-    };
-  }
-
-  if (status === 'approved') {
-    return {
-      badgeClass: 'is-approved',
-      badgeIcon: '✓',
-      badgeLabel: '已完成',
-      helperText: '今天已经完成啦',
-      canCheckin: false,
-    };
-  }
-
-  if (status === 'rejected') {
-    return {
-      badgeClass: 'is-rejected',
-      badgeIcon: '↺',
-      badgeLabel: '重新打卡',
-      helperText: '未通过，可以重新完成',
-      canCheckin: true,
-    };
-  }
-
-  return {
-    badgeClass: 'is-todo',
-    badgeIcon: '○',
-    badgeLabel: '待打卡',
-    helperText: '点击后提交给家长确认',
-    canCheckin: true,
-  };
-}
-
-function buildTaskViewModel(task, checkin) {
-  const status = checkin && checkin.status ? checkin.status : 'todo';
-  const statusMeta = getStatusMeta(status);
-
-  return Object.assign({}, task, statusMeta, {
-    status,
-  });
-}
+const {
+  buildTaskCollections,
+} = require('../../utils/task-schedule');
 
 function buildPageViewModel(state, dateLike) {
   const currentDate = formatDate(dateLike || Date.now());
-  const tasks = Array.isArray(state.tasks) ? state.tasks : [];
-  const checkins = Array.isArray(state.checkins) ? state.checkins : [];
-  const visibleTasks = tasks
-    .filter((task) => task && task.enabled)
-    .map((task) => {
-      const todayCheckin = getTaskCheckin(checkins, task.id, currentDate);
-
-      return buildTaskViewModel(task, todayCheckin);
-    });
+  const collections = buildTaskCollections(
+    Array.isArray(state.tasks) ? state.tasks : [],
+    Array.isArray(state.checkins) ? state.checkins : [],
+    dateLike || Date.now()
+  );
+  const visibleTasks = collections.tasks;
 
   return {
     currentDate,
     tasks: visibleTasks,
     taskCount: visibleTasks.length,
-    todoCount: visibleTasks.filter((task) => task.canCheckin).length,
-    pendingCount: visibleTasks.filter((task) => task.status === 'pending').length,
-    approvedCount: visibleTasks.filter((task) => task.status === 'approved').length,
+    todoCount: collections.counts.actionable,
+    pendingCount: collections.counts.pending,
+    approvedCount: collections.counts.approved,
+    nowTasks: collections.groups.now,
+    laterTasks: collections.groups.later,
+    doneTasks: collections.groups.done,
+    recommendedTaskId: collections.recommendedTask ? collections.recommendedTask.id : '',
   };
 }
 
@@ -123,6 +64,10 @@ function getLockedToast(status) {
     return '这个任务今天已经完成过啦';
   }
 
+  if (status === 'upcoming') {
+    return '还没到这个任务的时间';
+  }
+
   return '这个任务暂时不能重复打卡';
 }
 
@@ -134,6 +79,10 @@ Page({
     pendingCount: 0,
     approvedCount: 0,
     tasks: [],
+    nowTasks: [],
+    laterTasks: [],
+    doneTasks: [],
+    recommendedTaskId: '',
   },
 
   crossDayResetTimer: null,
@@ -200,7 +149,7 @@ Page({
   },
 
   handleTaskTap(event) {
-    const taskId = event.currentTarget.dataset.taskId;
+    const taskId = (event.detail && event.detail.taskId) || event.currentTarget.dataset.taskId;
     const task = (this.data.tasks || []).find((item) => item.id === taskId);
 
     if (!task) {

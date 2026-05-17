@@ -4,10 +4,7 @@
       <text class="index-title__emoji">🐕</text>
       <text class="index-title__name">{{petName}}</text>
     </view>
-    <view class="index-parent-entry" bindtap="handleGoParent">
-      <text class="index-parent-entry__icon">🔒</text>
-      <text class="index-parent-entry__label">家长</text>
-    </view>
+    <text class="index-header__period">{{recommendedTaskLabel ? '现在先做' : '今天陪伴中'}}</text>
   </view>
 
   <view class="index-card index-pet-card">
@@ -25,6 +22,7 @@
         size="420"
         enableAnimation="{{petAnimationEnabled}}"
         bind:pettap="handlePetTap"
+        bind:petlongpress="handlePetLongPress"
         bind:actionstart="handlePetActionStart"
         bind:actionend="handlePetActionEnd"
       />
@@ -34,6 +32,19 @@
       >{{statFloatText}}</text>
     </view>
     <view class="index-bubble">{{bubbleText}}</view>
+  </view>
+
+  <view class="index-card index-mission-card" bindtap="handleGoTasks">
+    <view class="index-mission-card__head">
+      <text class="index-mission-card__eyebrow">当前任务</text>
+      <text class="index-mission-card__cta">去任务页 ›</text>
+    </view>
+    <text class="index-mission-card__title">
+      {{recommendedTaskLabel ? recommendedTaskLabel : '今天先看看要做什么'}}
+    </text>
+    <text class="index-mission-card__desc">
+      {{pendingTaskCount > 0 ? '还有任务在等你完成，先做最合适的一件。' : '今天的主要任务都完成啦，回来陪陪它吧。'}}
+    </text>
   </view>
 
   <view class="index-card index-stats-card">
@@ -53,25 +64,13 @@
     />
   </view>
 
-  <view class="index-points-card">
+  <view class="index-points-card index-card">
     <text class="index-points-card__label">💰 积分</text>
     <text class="index-points-card__value">{{points}} 分</text>
     <text
       wx:if="{{pointsFloatVisible}}"
       class="index-float-text index-float-text--points"
     >{{pointsFloatText}}</text>
-  </view>
-
-  <view class="index-task-entry" bindtap="handleGoTasks">
-    <view class="index-task-entry__title">
-      <text class="index-task-entry__icon">📋</text>
-      <text class="index-task-entry__text">今日任务</text>
-      <text class="index-task-entry__count">({{pendingTaskCount}})</text>
-    </view>
-    <view class="index-task-entry__meta">
-      <view wx:if="{{pendingTaskCount > 0}}" class="index-task-entry__dot"></view>
-      <text class="index-task-entry__arrow">›</text>
-    </view>
   </view>
 
   <view class="index-actions">
@@ -91,12 +90,10 @@
       disabled="{{playDisabled}}"
       bindtapaction="handleActionTap"
     />
-    <action-btn
-      icon="🤚"
-      label="抚摸"
-      cost-label="免费"
-      action="pet"
-      bindtapaction="handleActionTap"
-    />
+  </view>
+
+  <view class="index-touch-hint">
+    <text class="index-touch-hint__icon">🤲</text>
+    <text class="index-touch-hint__text">轻点或长按宠物就能摸摸它</text>
   </view>
 </view>

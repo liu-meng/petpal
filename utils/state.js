@@ -6,18 +6,15 @@ const {
 const {
   formatDate,
 } = require('./time');
+const {
+  createDefaultTasks,
+  normalizeTaskList,
+} = require('./task-schedule');
 
-const DEFAULT_TASKS = [
-  { id: 'brushTeeth', icon: '🪥', label: '刷牙', points: 1, enabled: true, requireConfirm: true },
-  { id: 'eatMeal', icon: '🍚', label: '吃饭', points: 1, enabled: true, requireConfirm: true },
-  { id: 'sleepOnTime', icon: '🛏️', label: '按时睡觉', points: 1, enabled: true, requireConfirm: true },
-  { id: 'readBook', icon: '📚', label: '读绘本', points: 1, enabled: true, requireConfirm: true },
-  { id: 'tidyToys', icon: '🧹', label: '整理玩具', points: 1, enabled: true, requireConfirm: true },
-  { id: 'bathe', icon: '🚿', label: '洗澡', points: 1, enabled: false, requireConfirm: true },
-];
+const DEFAULT_TASKS = createDefaultTasks();
 
 function cloneTasks(tasks) {
-  return tasks.map((task) => Object.assign({}, task));
+  return tasks.map((task) => JSON.parse(JSON.stringify(task)));
 }
 
 function createDefaultState(now) {
@@ -60,7 +57,7 @@ function normalizeState(state) {
 
   return Object.assign({}, defaultState, source, {
     pet: Object.assign({}, defaultState.pet, sourcePet),
-    tasks: Array.isArray(source.tasks) ? source.tasks : defaultState.tasks,
+    tasks: normalizeTaskList(Array.isArray(source.tasks) ? source.tasks : defaultState.tasks),
     checkins: Array.isArray(source.checkins) ? source.checkins : defaultState.checkins,
     achievements: Array.isArray(source.achievements) ? source.achievements : defaultState.achievements,
     settings: Object.assign({}, defaultState.settings, sourceSettings),
@@ -179,6 +176,50 @@ function setTaskCheckinStatus(taskId, status, options) {
   }));
 }
 
+function upsertTask(taskLike, options) {
+  const config = isObject(options) ? options : {};
+  const now = typeof config.now === 'number' ? config.now : Date.now();
+  const state = getState();
+  const tasks = Array.isArray(state.tasks) ? state.tasks.map((task) => Object.assign({}, task)) : [];
+  const nextTask = Object.assign({}, taskLike || {});
+  const taskId = nextTask.id;
+
+  if (!taskId) {
+    return state;
+  }
+
+  const taskIndex = tasks.findIndex((task) => task && task.id === taskId);
+
+  if (taskIndex >= 0) {
+    tasks[taskIndex] = Object.assign({}, tasks[taskIndex], nextTask, {
+      updatedAt: now,
+    });
+  } else {
+    tasks.push(Object.assign({}, nextTask, {
+      createdAt: typeof nextTask.createdAt === 'number' ? nextTask.createdAt : now,
+      updatedAt: now,
+    }));
+  }
+
+  return saveState(Object.assign({}, state, {
+    tasks,
+  }));
+}
+
+function removeTask(taskId) {
+  const state = getState();
+  const tasks = Array.isArray(state.tasks) ? state.tasks : [];
+  const nextTasks = tasks.filter((task) => task && task.id !== taskId);
+
+  if (nextTasks.length === tasks.length) {
+    return state;
+  }
+
+  return saveState(Object.assign({}, state, {
+    tasks: nextTasks,
+  }));
+}
+
 module.exports = {
   DEFAULT_TASKS,
   createDefaultState,
@@ -190,4 +231,6 @@ module.exports = {
   resetState,
   saveState,
   setTaskCheckinStatus,
+  upsertTask,
+  removeTask,
 };

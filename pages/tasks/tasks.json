@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "今日任务",
+  "usingComponents": {
+    "task-card": "/components/task-card/index"
+  }
+}

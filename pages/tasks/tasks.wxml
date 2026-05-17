@@ -1,7 +1,7 @@
 <view class="tasks-page">
   <view class="tasks-hero">
     <text class="tasks-hero__emoji">📋</text>
-    <text class="tasks-hero__title">今天也认真完成任务吧</text>
+    <text class="tasks-hero__title">现在先做最重要的一件事</text>
     <text class="tasks-hero__date">{{currentDate}}</text>
     <text class="tasks-hero__summary">
       待打卡 {{todoCount}} · 待确认 {{pendingCount}} · 已完成 {{approvedCount}}
@@ -9,27 +9,49 @@
   </view>
 
   <view wx:if="{{taskCount > 0}}" class="tasks-list">
-    <view
-      wx:for="{{tasks}}"
-      wx:key="id"
-      class="tasks-item {{item.badgeClass}} {{item.canCheckin ? 'is-clickable' : 'is-locked'}}"
-      data-task-id="{{item.id}}"
-      bindtap="handleTaskTap"
-    >
-      <view class="tasks-item__main">
-        <text class="tasks-item__icon">{{item.icon}}</text>
-        <view class="tasks-item__content">
-          <text class="tasks-item__label">{{item.label}}</text>
-          <text class="tasks-item__helper">{{item.helperText}}</text>
-        </view>
+    <view wx:if="{{nowTasks.length > 0}}" class="tasks-section">
+      <view class="tasks-section__head">
+        <text class="tasks-section__title">现在去做</text>
+        <text class="tasks-section__count">{{nowTasks.length}} 项</text>
       </view>
+      <view class="tasks-section__list">
+        <task-card
+          wx:for="{{nowTasks}}"
+          wx:key="id"
+          task="{{item}}"
+          highlighted="{{item.id === recommendedTaskId}}"
+          bind:taptask="handleTaskTap"
+        />
+      </view>
+    </view>
 
-      <view class="tasks-item__aside">
-        <text class="tasks-item__points">+{{item.points}}分</text>
-        <view class="tasks-item__badge {{item.badgeClass}}">
-          <text class="tasks-item__badge-icon">{{item.badgeIcon}}</text>
-          <text class="tasks-item__badge-label">{{item.badgeLabel}}</text>
-        </view>
+    <view wx:if="{{laterTasks.length > 0}}" class="tasks-section">
+      <view class="tasks-section__head">
+        <text class="tasks-section__title">今天稍后</text>
+        <text class="tasks-section__count">{{laterTasks.length}} 项</text>
+      </view>
+      <view class="tasks-section__list">
+        <task-card
+          wx:for="{{laterTasks}}"
+          wx:key="id"
+          task="{{item}}"
+          bind:taptask="handleTaskTap"
+        />
+      </view>
+    </view>
+
+    <view wx:if="{{doneTasks.length > 0}}" class="tasks-section">
+      <view class="tasks-section__head">
+        <text class="tasks-section__title">已经完成</text>
+        <text class="tasks-section__count">{{doneTasks.length}} 项</text>
+      </view>
+      <view class="tasks-section__list">
+        <task-card
+          wx:for="{{doneTasks}}"
+          wx:key="id"
+          task="{{item}}"
+          bind:taptask="handleTaskTap"
+        />
       </view>
     </view>
   </view>

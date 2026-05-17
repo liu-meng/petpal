@@ -1,5 +1,8 @@
 # PetPal 开发计划
 
+> **说明**：本文件记录的是 2026-04-28 的 V1 初版开发计划，当前优化迭代请改读 [PetPal-V1.5-Development-Plan-20260516.md](/Users/liumeng/private/mini_program/petpal/docs/PetPal-V1.5-Development-Plan-20260516.md:1)。  
+> **当前适用文档**：V1.5 体验优化与实现拆分以 [PetPal-UX-Optimization-Design-20260512.md](/Users/liumeng/private/mini_program/petpal/docs/PetPal-UX-Optimization-Design-20260512.md:1) 和 [PetPal-V1.5-Development-Plan-20260516.md](/Users/liumeng/private/mini_program/petpal/docs/PetPal-V1.5-Development-Plan-20260516.md:1) 为准。
+
 > **项目**：PetPal 微信小程序 - 4-7岁儿童习惯养成宠物游戏  
 > **产品负责人**：Alex（产品经理智能体）  
 > **Date**: 2026-04-28  

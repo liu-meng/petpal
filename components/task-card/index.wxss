@@ -1,0 +1,152 @@
+.task-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20rpx;
+  padding: 28rpx 24rpx;
+  border-radius: 28rpx;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 16rpx 40rpx rgba(210, 157, 68, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.task-card.is-highlighted {
+  box-shadow: 0 22rpx 48rpx rgba(233, 145, 47, 0.18);
+  border: 2rpx solid rgba(233, 145, 47, 0.18);
+}
+
+.task-card.is-clickable:active {
+  transform: scale(0.98);
+}
+
+.task-card.is-locked {
+  opacity: 0.88;
+}
+
+.task-card__main {
+  display: flex;
+  align-items: center;
+  gap: 18rpx;
+  min-width: 0;
+  flex: 1;
+}
+
+.task-card__icon {
+  width: 72rpx;
+  height: 72rpx;
+  line-height: 72rpx;
+  border-radius: 22rpx;
+  background: #fff5dc;
+  text-align: center;
+  font-size: 36rpx;
+  flex-shrink: 0;
+}
+
+.task-card__content {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+  min-width: 0;
+}
+
+.task-card__label {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #5b4323;
+}
+
+.task-card__helper {
+  font-size: 24rpx;
+  color: #967b52;
+}
+
+.task-card__time {
+  font-size: 22rpx;
+  color: #b08852;
+}
+
+.task-card__aside {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12rpx;
+  flex-shrink: 0;
+}
+
+.task-card__points {
+  font-size: 24rpx;
+  color: #af8345;
+}
+
+.task-card__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: 10rpx 16rpx;
+  border-radius: 999rpx;
+  font-size: 24rpx;
+  font-weight: 600;
+}
+
+.task-card__badge-icon {
+  font-size: 24rpx;
+}
+
+.task-card__badge-label {
+  line-height: 1;
+}
+
+.task-card__badge.is-ready,
+.task-card.is-ready {
+  background-color: #ffffff;
+}
+
+.task-card__badge.is-ready {
+  color: #8b7250;
+  background: #f6efe7;
+}
+
+.task-card__badge.is-upcoming {
+  color: #8c7242;
+  background: #f6ecd0;
+}
+
+.task-card.is-upcoming {
+  background: #fffaf0;
+}
+
+.task-card__badge.is-overdue {
+  color: #b85e1b;
+  background: #ffe4c3;
+}
+
+.task-card.is-overdue {
+  background: #fff6ed;
+}
+
+.task-card__badge.is-pending {
+  color: #9c6217;
+  background: #fff1cb;
+}
+
+.task-card.is-pending {
+  background: #fffaf0;
+}
+
+.task-card__badge.is-approved {
+  color: #2e7a47;
+  background: #dff4e5;
+}
+
+.task-card.is-approved {
+  background: #f6fffa;
+}
+
+.task-card__badge.is-rejected {
+  color: #b74855;
+  background: #ffe0e4;
+}
+
+.task-card.is-rejected {
+  background: #fff7f8;
+}

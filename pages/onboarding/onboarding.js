@@ -29,7 +29,7 @@ Page({
     const state = getState();
 
     if (state.initialized) {
-      wx.reLaunch({
+      wx.switchTab({
         url: '/pages/index/index',
       });
       return;
@@ -73,7 +73,7 @@ Page({
       name: petName,
     });
 
-    wx.reLaunch({
+    wx.switchTab({
       url: '/pages/index/index',
     });
   },

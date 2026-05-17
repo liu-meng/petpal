@@ -40,133 +40,39 @@
 .tasks-list {
   display: flex;
   flex-direction: column;
-  gap: 18rpx;
+  gap: 22rpx;
   margin-top: 24rpx;
 }
 
-.tasks-item {
+.tasks-section {
+  display: flex;
+  flex-direction: column;
+  gap: 14rpx;
+}
+
+.tasks-section__head {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 20rpx;
-  padding: 28rpx 24rpx;
-  border-radius: 28rpx;
-  background: rgba(255, 255, 255, 0.94);
-  box-shadow: 0 16rpx 40rpx rgba(210, 157, 68, 0.1);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  gap: 16rpx;
+  padding: 0 8rpx;
 }
 
-.tasks-item.is-clickable:active {
-  transform: scale(0.98);
-}
-
-.tasks-item.is-locked {
-  opacity: 0.88;
-}
-
-.tasks-item__main {
-  display: flex;
-  align-items: center;
-  gap: 18rpx;
-  min-width: 0;
-  flex: 1;
-}
-
-.tasks-item__icon {
-  width: 72rpx;
-  height: 72rpx;
-  line-height: 72rpx;
-  border-radius: 22rpx;
-  background: #fff5dc;
-  text-align: center;
-  font-size: 36rpx;
-  flex-shrink: 0;
-}
-
-.tasks-item__content {
-  display: flex;
-  flex-direction: column;
-  gap: 8rpx;
-  min-width: 0;
-}
-
-.tasks-item__label {
-  font-size: 32rpx;
+.tasks-section__title {
+  font-size: 28rpx;
   font-weight: 700;
-  color: #5b4323;
+  color: #6b4d1f;
 }
 
-.tasks-item__helper {
-  font-size: 24rpx;
-  color: #967b52;
+.tasks-section__count {
+  font-size: 22rpx;
+  color: #9a7b49;
 }
 
-.tasks-item__aside {
+.tasks-section__list {
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
-  gap: 12rpx;
-  flex-shrink: 0;
-}
-
-.tasks-item__points {
-  font-size: 24rpx;
-  color: #af8345;
-}
-
-.tasks-item__badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 8rpx;
-  padding: 10rpx 16rpx;
-  border-radius: 999rpx;
-  font-size: 24rpx;
-  font-weight: 600;
-}
-
-.tasks-item__badge-icon {
-  font-size: 24rpx;
-}
-
-.tasks-item__badge-label {
-  line-height: 1;
-}
-
-.tasks-item__badge.is-todo,
-.tasks-item.is-todo {
-  background-color: #ffffff;
-}
-
-.tasks-item__badge.is-todo {
-  color: #8b7250;
-  background: #f6efe7;
-}
-
-.tasks-item__badge.is-pending {
-  color: #9c6217;
-  background: #fff1cb;
-}
-
-.tasks-item.is-pending {
-  background: #fffaf0;
-}
-
-.tasks-item__badge.is-approved {
-  color: #2e7a47;
-  background: #dff4e5;
-}
-
-.tasks-item.is-approved {
-  background: #f6fffa;
-}
-
-.tasks-item__badge.is-rejected {
-  color: #b74855;
-  background: #ffe0e4;
-}
-
-.tasks-item.is-rejected {
-  background: #fff7f8;
+  gap: 18rpx;
 }
 
 .tasks-empty {

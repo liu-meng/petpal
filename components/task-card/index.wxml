@@ -1,0 +1,21 @@
+<view
+  class="task-card {{task.badgeClass}} {{task.canCheckin ? 'is-clickable' : 'is-locked'}} {{highlighted ? 'is-highlighted' : ''}}"
+  bindtap="handleTap"
+>
+  <view class="task-card__main">
+    <text class="task-card__icon">{{task.icon}}</text>
+    <view class="task-card__content">
+      <text class="task-card__label">{{task.label}}</text>
+      <text class="task-card__helper">{{task.helperText}}</text>
+      <text class="task-card__time">{{task.scheduleLabel}}</text>
+    </view>
+  </view>
+
+  <view class="task-card__aside">
+    <text class="task-card__points">+{{task.points}}分</text>
+    <view class="task-card__badge {{task.badgeClass}}">
+      <text class="task-card__badge-icon">{{task.badgeIcon}}</text>
+      <text class="task-card__badge-label">{{task.badgeLabel}}</text>
+    </view>
+  </view>
+</view>

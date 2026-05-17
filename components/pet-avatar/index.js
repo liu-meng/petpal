@@ -985,5 +985,26 @@ Component({
         source: 'tap',
       });
     },
+
+    handleLongPress(event) {
+      const point = getCurrentPoint(event);
+      const rect = this.canvasRect;
+
+      if (!rect) {
+        this.measureShellRect();
+        return;
+      }
+
+      const localX = point.x - rect.left;
+      const localY = point.y - rect.top;
+      const hitArea = this.hitTest(localX, localY) || 'body';
+
+      this.triggerEvent('petlongpress', {
+        hitArea,
+        action: 'pet',
+        x: localX,
+        y: localY,
+      });
+    },
   },
 });

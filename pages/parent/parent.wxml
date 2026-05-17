@@ -51,6 +51,10 @@
         <text class="parent-summary-card__label">已启用任务</text>
         <text class="parent-summary-card__value">{{enabledTaskCount}} / {{taskCount}}</text>
       </view>
+      <view class="parent-summary-card__item">
+        <text class="parent-summary-card__label">自定义任务</text>
+        <text class="parent-summary-card__value">{{customTaskCount}} 条</text>
+      </view>
     </view>
 
     <view class="parent-card">
@@ -79,7 +83,22 @@
               <text class="parent-pending-item__meta">{{item.date}} · +{{item.points}} 分</text>
             </view>
           </view>
-          <text class="parent-pending-item__status">待审核</text>
+          <view class="parent-pending-item__actions">
+            <button
+              class="parent-pending-item__action is-approve"
+              data-task-id="{{item.taskId}}"
+              data-date="{{item.date}}"
+              data-created-at="{{item.createdAt}}"
+              bindtap="handleApproveOne"
+            >通过</button>
+            <button
+              class="parent-pending-item__action is-reject"
+              data-task-id="{{item.taskId}}"
+              data-date="{{item.date}}"
+              data-created-at="{{item.createdAt}}"
+              bindtap="handleRejectOne"
+            >驳回</button>
+          </view>
         </view>
       </view>
 
@@ -93,7 +112,7 @@
     <view class="parent-card">
       <view class="parent-section__head">
         <view>
-          <text class="parent-card__title">任务开关</text>
+          <text class="parent-card__title">今日任务管理</text>
           <text class="parent-card__desc">切换后会立即写入本地 storage，并影响孩子侧任务展示。</text>
         </view>
       </view>
@@ -104,7 +123,7 @@
             <text class="parent-task-item__icon">{{item.icon}}</text>
             <view class="parent-task-item__content">
               <text class="parent-task-item__label">{{item.label}}</text>
-              <text class="parent-task-item__meta">+{{item.points}} 分</text>
+              <text class="parent-task-item__meta">{{item.scheduleLabel}} · +{{item.points}} 分 · {{item.requireConfirm ? '需审核' : '直接奖励'}}</text>
             </view>
           </view>
 
@@ -116,7 +135,91 @@
               data-task-id="{{item.id}}"
               bindchange="handleTaskSwitchChange"
             />
+            <button
+              wx:if="{{item.sourceType === 'custom'}}"
+              class="parent-task-item__edit"
+              data-task-id="{{item.id}}"
+              bindtap="openEditTaskForm"
+            >编辑</button>
+            <button
+              wx:if="{{item.sourceType === 'custom'}}"
+              class="parent-task-item__delete"
+              data-task-id="{{item.id}}"
+              bindtap="handleDeleteTask"
+            >删除</button>
           </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="parent-card">
+      <view class="parent-section__head">
+        <view>
+          <text class="parent-card__title">任务模板与自定义任务</text>
+          <text class="parent-card__desc">先用预设任务，也可以新增更贴合家庭作息的自定义任务。</text>
+        </view>
+        <button class="parent-create-task-button" bindtap="openCreateTaskForm">+ 添加任务</button>
+      </view>
+
+      <view wx:if="{{customTaskFormVisible}}" class="parent-task-form">
+        <text class="parent-task-form__title">{{customTaskDraft.id ? '编辑自定义任务' : '新增自定义任务'}}</text>
+
+        <input
+          class="parent-task-form__input"
+          placeholder="任务名称，例如：收拾书包"
+          value="{{customTaskDraft.label}}"
+          bindinput="handleDraftLabelInput"
+        />
+
+        <view class="parent-task-form__row">
+          <input
+            class="parent-task-form__input is-half"
+            placeholder="开始时间 18:00"
+            value="{{customTaskDraft.startAt}}"
+            bindinput="handleDraftStartInput"
+          />
+          <input
+            class="parent-task-form__input is-half"
+            placeholder="结束时间 19:00"
+            value="{{customTaskDraft.endAt}}"
+            bindinput="handleDraftEndInput"
+          />
+        </view>
+
+        <input
+          class="parent-task-form__input"
+          type="number"
+          placeholder="积分 1-5"
+          value="{{customTaskDraft.points}}"
+          bindinput="handleDraftPointsInput"
+        />
+
+        <view class="parent-task-form__icons">
+          <view
+            wx:for="{{customTaskIcons}}"
+            wx:key="*this"
+            class="parent-task-form__icon {{customTaskDraft.icon === item ? 'is-selected' : ''}}"
+            data-icon="{{item}}"
+            bindtap="handleDraftIconTap"
+          >
+            <text>{{item}}</text>
+          </view>
+        </view>
+
+        <view class="parent-task-form__switches">
+          <view class="parent-task-form__switch-item">
+            <text class="parent-task-form__switch-label">需要家长确认</text>
+            <switch checked="{{customTaskDraft.requireConfirm}}" color="#efb24a" bindchange="handleDraftRequireConfirmChange" />
+          </view>
+          <view class="parent-task-form__switch-item">
+            <text class="parent-task-form__switch-label">立即启用</text>
+            <switch checked="{{customTaskDraft.enabled}}" color="#efb24a" bindchange="handleDraftEnabledChange" />
+          </view>
+        </view>
+
+        <view class="parent-task-form__actions">
+          <button class="parent-task-form__button is-secondary" bindtap="closeCreateTaskForm">取消</button>
+          <button class="parent-task-form__button is-primary" bindtap="handleCreateTask">{{customTaskDraft.id ? '更新任务' : '保存任务'}}</button>
         </view>
       </view>
     </view>

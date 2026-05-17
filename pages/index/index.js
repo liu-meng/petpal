@@ -3,11 +3,17 @@ const {
   saveState,
 } = require('../../utils/state');
 const {
+  buildTaskCollections,
+} = require('../../utils/task-schedule');
+const {
   clampStat,
   decayState,
   getMood,
 } = require('../../utils/decay');
 const { getPetRenderModel } = require('../../utils/pet-renderer');
+const {
+  buildPetPrompt,
+} = require('../../utils/task-prompt');
 const { formatDate } = require('../../utils/time');
 
 function shouldEnablePetAnimation() {
@@ -91,22 +97,13 @@ function cloneState(state) {
 }
 
 function getPendingTaskCount(state) {
-  const sourceState = state || {};
-  const tasks = Array.isArray(sourceState.tasks) ? sourceState.tasks : [];
-  const today = formatDate(Date.now());
-  const todayCheckins = Array.isArray(sourceState.checkins) ? sourceState.checkins : [];
+  const collections = buildTaskCollections(
+    state && state.tasks,
+    state && state.checkins,
+    Date.now()
+  );
 
-  return tasks.filter((task) => {
-    if (!task || !task.enabled) {
-      return false;
-    }
-
-    const todayCheckin = todayCheckins.find(
-      (checkin) => checkin && checkin.taskId === task.id && checkin.date === today
-    );
-
-    return !todayCheckin || todayCheckin.status === 'rejected';
-  }).length;
+  return collections.counts.actionable;
 }
 
 function buildViewState(state, activeAction) {
@@ -114,6 +111,11 @@ function buildViewState(state, activeAction) {
   const pet = sourceState.pet || {};
   const mood = getMood(pet.hunger, pet.happiness);
   const points = Math.max(0, Number(sourceState.points) || 0);
+  const taskCollections = buildTaskCollections(
+    Array.isArray(sourceState.tasks) ? sourceState.tasks : [],
+    Array.isArray(sourceState.checkins) ? sourceState.checkins : [],
+    Date.now()
+  );
   const renderModel = getPetRenderModel({
     species: pet.type,
     mood,
@@ -130,12 +132,19 @@ function buildViewState(state, activeAction) {
     pet,
     mood,
     activeAction: activeAction || 'idle',
-    bubbleText: renderModel.bubbleText,
+    bubbleText: buildPetPrompt({
+      mood,
+      points,
+      recommendedTask: taskCollections.recommendedTask,
+      hasReadyTask: taskCollections.counts.ready > 0 || taskCollections.counts.overdue > 0,
+    }) || renderModel.bubbleText,
     moodLabel: moodMeta.label,
     moodHint: moodMeta.hint,
     pendingTaskCount: getPendingTaskCount(sourceState),
+    recommendedTask: taskCollections.recommendedTask,
     feedDisabled: points < ACTION_EFFECTS.feed.pointsCost,
     playDisabled: points < ACTION_EFFECTS.play.pointsCost,
+    canPetDirectly: true,
   };
 }
 
@@ -154,6 +163,7 @@ Page({
     moodLabel: '',
     moodHint: '',
     pendingTaskCount: 0,
+    recommendedTaskLabel: '',
     feedDisabled: true,
     playDisabled: true,
     pointsFloatText: '',
@@ -217,6 +227,7 @@ Page({
       moodLabel: viewState.moodLabel,
       moodHint: viewState.moodHint,
       pendingTaskCount: viewState.pendingTaskCount,
+      recommendedTaskLabel: viewState.recommendedTask ? viewState.recommendedTask.label : '',
       feedDisabled: viewState.feedDisabled,
       playDisabled: viewState.playDisabled,
     });
@@ -252,6 +263,40 @@ Page({
     const detail = event.detail || {};
 
     this.lastPetTapArea = detail.hitArea || '';
+
+    if (this.isPetActionPlaying || this.pendingAvatarAction) {
+      return;
+    }
+
+    const currentState = getState();
+    const decayedState = decayState(currentState, Date.now());
+    const nextState = cloneState(decayedState);
+    const now = Date.now();
+
+    nextState.pet.happiness = clampStat(nextState.pet.happiness + ACTION_EFFECTS.pet.happinessDelta);
+    nextState.pet.lastDecayAt = now;
+    nextState.pet.decayCarry = {
+      hunger: 0,
+      happiness: 0,
+    };
+
+    const savedState = saveState(nextState);
+    const app = getApp();
+
+    if (app && app.globalData) {
+      app.globalData.state = savedState;
+    }
+
+    this.applyViewState(savedState, 'pet');
+    this.showFloatFeedback('pet');
+  },
+
+  handlePetLongPress() {
+    this.handlePetTap({
+      detail: {
+        hitArea: 'body',
+      },
+    });
   },
 
   handlePetActionStart(event) {
@@ -398,13 +443,13 @@ Page({
   },
 
   handleGoTasks() {
-    wx.navigateTo({
+    wx.switchTab({
       url: '/pages/tasks/tasks',
     });
   },
 
   handleGoParent() {
-    wx.navigateTo({
+    wx.switchTab({
       url: '/pages/parent/parent',
     });
   },

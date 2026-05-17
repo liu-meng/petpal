@@ -1,8 +1,17 @@
 const {
   getState,
   saveState,
+  upsertTask,
+  removeTask,
 } = require('../../utils/state');
 const { clampStat } = require('../../utils/decay');
+const {
+  normalizeTask,
+  normalizeTaskList,
+  normalizeClockTime,
+} = require('../../utils/task-schedule');
+
+const CUSTOM_TASK_ICONS = ['⭐', '🎨', '🧩', '🪥', '📚', '🍚', '🧸', '🚿'];
 
 function hasValidParentPin(state) {
   return !!(
@@ -75,6 +84,7 @@ function buildPendingItem(checkin, taskMap) {
   return {
     key: `${checkin.taskId}_${checkin.date}_${checkin.createdAt || 0}`,
     taskId: checkin.taskId,
+    createdAt: checkin.createdAt || 0,
     icon: task && task.icon ? task.icon : '📝',
     label: task && task.label ? task.label : checkin.taskId,
     date: checkin.date || '',
@@ -90,6 +100,11 @@ function buildTaskItem(task, pendingCount) {
     label: task.label || task.id,
     points: Math.max(0, Number(task.points) || 0),
     enabled: task.enabled !== false,
+    requireConfirm: task.requireConfirm !== false,
+    sourceType: task.sourceType || 'preset',
+    scheduleLabel: task.schedule
+      ? `${task.schedule.startAt || '00:00'}-${task.schedule.endAt || '23:59'}`
+      : '全天',
     pendingCount: pendingCount || 0,
   };
 }
@@ -116,6 +131,7 @@ function buildPageViewModel(state, isAuthed) {
     taskCount: taskItems.length,
     enabledTaskCount: taskItems.filter((task) => task.enabled).length,
     tasks: taskItems,
+    customTaskCount: taskItems.filter((task) => task.sourceType === 'custom').length,
   };
 }
 
@@ -179,6 +195,20 @@ Page({
     taskCount: 0,
     enabledTaskCount: 0,
     tasks: [],
+    customTaskCount: 0,
+    customTaskFormVisible: false,
+    customTaskDraft: {
+      id: '',
+      sourceType: 'custom',
+      icon: CUSTOM_TASK_ICONS[0],
+      label: '',
+      startAt: '18:00',
+      endAt: '19:00',
+      points: 1,
+      requireConfirm: true,
+      enabled: true,
+    },
+    customTaskIcons: CUSTOM_TASK_ICONS,
   },
 
   onLoad() {
@@ -239,6 +269,278 @@ Page({
       taskCount: viewModel.taskCount,
       enabledTaskCount: viewModel.enabledTaskCount,
       tasks: viewModel.tasks,
+      customTaskCount: viewModel.customTaskCount,
+    });
+  },
+
+  openCreateTaskForm() {
+    if (this.data.authMode !== 'panel') {
+      return;
+    }
+
+    this.setData({
+      customTaskFormVisible: true,
+      customTaskDraft: {
+        id: '',
+        sourceType: 'custom',
+        icon: CUSTOM_TASK_ICONS[0],
+        label: '',
+        startAt: '18:00',
+        endAt: '19:00',
+        points: 1,
+        requireConfirm: true,
+        enabled: true,
+      },
+    });
+  },
+
+  closeCreateTaskForm() {
+    this.setData({
+      customTaskFormVisible: false,
+    });
+  },
+
+  openEditTaskForm(event) {
+    if (this.data.authMode !== 'panel') {
+      return;
+    }
+
+    const taskId = event.currentTarget.dataset.taskId;
+    const task = (this.data.tasks || []).find((item) => item.id === taskId);
+
+    if (!task || task.sourceType !== 'custom') {
+      return;
+    }
+
+    this.setData({
+      customTaskFormVisible: true,
+      customTaskDraft: {
+        id: task.id,
+        sourceType: 'custom',
+        icon: task.icon || CUSTOM_TASK_ICONS[0],
+        label: task.label || '',
+        startAt: (task.scheduleLabel || '18:00-19:00').split('-')[0] || '18:00',
+        endAt: (task.scheduleLabel || '18:00-19:00').split('-')[1] || '19:00',
+        points: task.points || 1,
+        requireConfirm: task.requireConfirm !== false,
+        enabled: task.enabled !== false,
+      },
+    });
+  },
+
+  handleDraftLabelInput(event) {
+    this.setData({
+      'customTaskDraft.label': String(event.detail.value || '').slice(0, 12),
+    });
+  },
+
+  handleDraftStartInput(event) {
+    this.setData({
+      'customTaskDraft.startAt': normalizeClockTime(event.detail.value, '18:00'),
+    });
+  },
+
+  handleDraftEndInput(event) {
+    this.setData({
+      'customTaskDraft.endAt': normalizeClockTime(event.detail.value, '19:00'),
+    });
+  },
+
+  handleDraftPointsInput(event) {
+    const value = Math.max(1, Math.min(5, Number(event.detail.value) || 1));
+
+    this.setData({
+      'customTaskDraft.points': value,
+    });
+  },
+
+  handleDraftRequireConfirmChange(event) {
+    this.setData({
+      'customTaskDraft.requireConfirm': !!(event.detail && event.detail.value),
+    });
+  },
+
+  handleDraftEnabledChange(event) {
+    this.setData({
+      'customTaskDraft.enabled': !!(event.detail && event.detail.value),
+    });
+  },
+
+  handleDraftIconTap(event) {
+    const icon = event.currentTarget.dataset.icon;
+
+    if (!icon) {
+      return;
+    }
+
+    this.setData({
+      'customTaskDraft.icon': icon,
+    });
+  },
+
+  handleCreateTask() {
+    if (this.data.authMode !== 'panel') {
+      return;
+    }
+
+    const draft = this.data.customTaskDraft || {};
+    const label = String(draft.label || '').trim();
+
+    if (!label) {
+      wx.showToast({
+        title: '请输入任务名称',
+        icon: 'none',
+      });
+      return;
+    }
+
+    const now = Date.now();
+    const taskId = draft.id || `custom_${now}`;
+    const nextTask = normalizeTask({
+      id: taskId,
+      sourceType: 'custom',
+      icon: draft.icon || CUSTOM_TASK_ICONS[0],
+      label,
+      points: draft.points,
+      enabled: draft.enabled !== false,
+      requireConfirm: draft.requireConfirm !== false,
+      schedule: {
+        period: 'anytime',
+        startAt: normalizeClockTime(draft.startAt, '18:00'),
+        endAt: normalizeClockTime(draft.endAt, '19:00'),
+        daysOfWeek: [1, 2, 3, 4, 5, 6, 0],
+      },
+      promptText: `先去完成${label}吧`,
+      sortOrder: 1000 + now,
+      createdAt: now,
+      updatedAt: now,
+    });
+
+    const savedState = upsertTask(nextTask, { now });
+
+    syncGlobalState(savedState);
+    this.syncPageState(savedState, {
+      preserveAuth: true,
+    });
+    this.closeCreateTaskForm();
+
+    wx.showToast({
+      title: draft.id ? '自定义任务已更新' : '自定义任务已添加',
+      icon: 'none',
+    });
+  },
+
+  handleApproveOne(event) {
+    this.applySingleReview(event.currentTarget.dataset, 'approved');
+  },
+
+  handleRejectOne(event) {
+    this.applySingleReview(event.currentTarget.dataset, 'rejected');
+  },
+
+  applySingleReview(dataset, status) {
+    if (this.data.authMode !== 'panel') {
+      return;
+    }
+
+    const taskId = dataset.taskId;
+    const date = dataset.date;
+    const createdAt = Number(dataset.createdAt) || 0;
+    const latestState = getState();
+    const checkins = Array.isArray(latestState.checkins) ? latestState.checkins : [];
+    const taskMap = getTaskMap(latestState.tasks);
+    let rewardPoints = 0;
+    let handledCount = 0;
+
+    const nextCheckins = checkins.map((checkin) => {
+      if (
+        !checkin
+        || checkin.status !== 'pending'
+        || checkin.taskId !== taskId
+        || checkin.date !== date
+        || (Number(checkin.createdAt) || 0) !== createdAt
+      ) {
+        return checkin;
+      }
+
+      handledCount += 1;
+
+      if (status === 'approved') {
+        const task = taskMap[checkin.taskId] || null;
+        rewardPoints += Math.max(0, Number(task && task.points) || 0);
+      }
+
+      return Object.assign({}, checkin, {
+        status,
+        confirmedAt: Date.now(),
+      });
+    });
+
+    if (handledCount <= 0) {
+      wx.showToast({
+        title: '这条待审核任务已更新',
+        icon: 'none',
+      });
+      return;
+    }
+
+    const sourcePet = latestState.pet || {};
+    const savedState = saveState(Object.assign({}, latestState, {
+      checkins: nextCheckins,
+      points: status === 'approved'
+        ? Math.max(0, Number(latestState.points) || 0) + rewardPoints
+        : Math.max(0, Number(latestState.points) || 0),
+      pet: status === 'approved'
+        ? Object.assign({}, sourcePet, {
+          happiness: clampStat((Number(sourcePet.happiness) || 0) + handledCount),
+          totalPointsEarned: Math.max(0, Number(sourcePet.totalPointsEarned) || 0) + rewardPoints,
+        })
+        : sourcePet,
+    }));
+
+    syncGlobalState(savedState);
+    this.syncPageState(savedState, {
+      preserveAuth: true,
+    });
+
+    wx.showToast({
+      title: status === 'approved' ? '已通过 1 项' : '已驳回 1 项',
+      icon: 'none',
+    });
+  },
+
+  handleDeleteTask(event) {
+    if (this.data.authMode !== 'panel') {
+      return;
+    }
+
+    const taskId = event.currentTarget.dataset.taskId;
+    const task = (this.data.tasks || []).find((item) => item.id === taskId);
+
+    if (!task || task.sourceType !== 'custom') {
+      return;
+    }
+
+    wx.showModal({
+      title: '删除任务',
+      content: `确认删除“${task.label}”吗？`,
+      confirmColor: '#c15465',
+      success: (result) => {
+        if (!result.confirm) {
+          return;
+        }
+
+        const savedState = removeTask(taskId);
+        syncGlobalState(savedState);
+        this.syncPageState(savedState, {
+          preserveAuth: true,
+        });
+
+        wx.showToast({
+          title: '任务已删除',
+          icon: 'none',
+        });
+      },
     });
   },
 

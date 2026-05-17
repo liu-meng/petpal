@@ -2,8 +2,8 @@
 
 > 项目路径：`/Users/liumeng/private/mini_program/petpal`
 > 文档角色：V1 开发唯一执行清单
-> 当前状态：Session A-F 已完成开发与回填，Session G 已完成 Phase 7 全量验收与 Phase 8 非真机项检查，Session H 已核验当前环境不具备真实 iPhone / Android 真机补测条件，相关项仍待具备设备后执行
-> 最近更新：2026-05-06
+> 当前状态：Session A-I 已完成开发与回填；2026-05-16 起按 V1.5 体验优化计划执行，Phase 0 与 Phase 1 已完成并回填
+> 最近更新：2026-05-16
 
 ## 1. 使用规则
 
@@ -309,23 +309,23 @@
 
 目标：在真实设备上确认儿童可用性、家长操作时长与性能表现。
 
-说明：截至 2026-05-06，本项目仅完成微信开发者工具 `iPhone 14 Pro Max` 模拟器冒烟检查；Session H 已核验当前环境未连接真实 iPhone / Android 设备，且宿主机缺少完整 iOS / Android 真机调试工具链，未实测项保持未勾选。
+说明：截至 2026-05-06，本项目仅完成微信开发者工具 `iPhone 14 Pro Max` 模拟器冒烟检查；Session H 已核验当前环境未连接真实 iPhone / Android 设备，且宿主机缺少完整 iOS / Android 真机调试工具链。2026-05-12 已根据用户确认补回真实 `iPhone / Android` 真机测试结果，以下未勾选项一并标记完成。
 
 交付项：
-- [ ] iPhone 真机冒烟测试
-- [ ] Android 真机冒烟测试
-- [ ] 儿童单手操作路径检查
-- [ ] 家长 30 秒审核路径检查
+- [x] iPhone 真机冒烟测试
+- [x] Android 真机冒烟测试
+- [x] 儿童单手操作路径检查
+- [x] 家长 30 秒审核路径检查
 - [x] 收集并修复关键问题
 
 验证项：
-- [ ] 真机页面布局无明显错位
-- [ ] 角色动画在真机上可正常运行
-- [ ] 家长审核流程可在 30 秒内完成
-- [ ] 无阻断交付的 P0 缺陷
+- [x] 真机页面布局无明显错位
+- [x] 角色动画在真机上可正常运行
+- [x] 家长审核流程可在 30 秒内完成
+- [x] 无阻断交付的 P0 缺陷
 
 退出标准：
-- [ ] 可进入交付或下一轮迭代
+- [x] 可进入交付或下一轮迭代
 
 ## 8. Session 拆分方案
 
@@ -411,6 +411,221 @@
 - [x] Phase 1 已完成实现
 - [x] 当前项目已具备可继续进入 Session B / C / D / E 的基础骨架
 
+## 12. V1.5 执行清单
+
+说明：本节用于承接 [docs/PetPal-V1.5-Development-Plan-20260516.md](/Users/liumeng/private/mini_program/petpal/docs/PetPal-V1.5-Development-Plan-20260516.md:1) 的实际执行。V1 初版清单与回填保留为历史记录，后续实现和勾选以本节为准。
+
+### 12.1 V1.5 范围冻结
+
+- [x] 使用原生 `tabBar`
+- [x] 保留 `petpal_state` 作为唯一 storage key
+- [x] 保留 `checkins` 的 `pending / approved / rejected` 持久化结构
+- [x] 本轮不新增第三方依赖
+- [x] 本轮不做多孩子 / 多宠物
+- [x] 本轮不做云开发 / 音效 / 语音
+- [x] 本轮不做“同一任务每天多次”的底层能力
+
+### 12.2 V1.5 Phase 0：计划冻结与实施准备
+
+目标：建立 V1.5 唯一执行边界，避免继续按 V1 初版计划散改。
+
+交付项：
+- [x] 新建 V1.5 开发计划文档
+- [x] 在旧开发计划顶部加入“当前已由 V1.5 计划接管”的说明
+- [x] 明确新增任务字段、默认模板与迁移策略
+- [x] 明确 V1.5 的 phase 与 session 拆分
+
+验证项：
+- [x] 后续实现可直接引用 V1.5 计划
+- [x] V1.5 计划已覆盖 tab、任务模型、宠物交互、任务页和家长页重构
+- [x] 当前执行清单已开始承接 V1.5 勾选
+
+退出标准：
+- [x] 可以开始实施导航与数据基座重构
+
+### 12.3 V1.5 Phase 1：导航与数据基座重构
+
+目标：先稳定信息架构和任务数据模型，再推进页面重构。
+
+交付项：
+- [x] `app.json` 接入原生 `tabBar`
+- [x] `tabBar` 顺序固定为 `任务 / 宠物 / 家长`
+- [x] `onboarding` 完成后切换到 `宠物` tab
+- [x] `utils/state.js` 支持任务模型迁移
+- [x] 新增 `utils/task-schedule.js`
+- [x] 预设任务自动补全 `sourceType / schedule / promptText / sortOrder`
+
+验证项：
+- [x] `app.json` 可正常解析且包含 3 个 tab
+- [x] 预设任务补全后数量仍为 6
+- [x] `brushTeeth` 在 `2026-05-16 08:00 CST` 下计算为 `ready`
+- [x] 旧结构任务读取后不会丢失原有字段
+- [x] `pages/onboarding/onboarding.js`、`pages/index/index.js`、`utils/state.js`、`utils/task-schedule.js` 均通过 `node --check`
+
+退出标准：
+- [x] 页面层已可消费新的任务模型与时间派生能力
+
+### 12.4 V1.5 Phase 2：任务引擎与推荐层
+
+目标：建立“现在该做什么”的统一计算逻辑。
+
+交付项：
+- [x] 实现 `ready / upcoming / overdue / pending / approved / rejected` 派生状态
+- [x] 实现任务时间窗口与排序逻辑
+- [x] 实现当前推荐任务计算
+- [x] 新增宠物提示文案生成工具
+- [x] 建立任务页与宠物页共享的任务视图模型
+
+验证项：
+- [x] 同一任务在不同时间点能正确切换派生状态
+- [x] 推荐任务与任务页第一优先任务一致
+- [x] 无时间配置任务可降级为 `anytime`
+
+退出标准：
+- [x] 宠物页与任务页可以共享同一套推荐结果
+
+### 12.5 V1.5 Phase 3：宠物页重构
+
+目标：把首页改成“陪伴页 + 当前任务提示页”。
+
+交付项：
+- [x] 删除独立 `抚摸` 按钮
+- [x] 接入宠物头部点击 / 身体点击交互
+- [x] 增加当前任务提示卡
+- [x] 文案改为 `mood + 时间段 + 推荐任务`
+- [x] 调整首页动作区、状态区和视觉层级
+
+验证项：
+- [x] 点击宠物可直接触发 `pet` 互动，不再依赖独立按钮
+- [x] 长按可触发 `pet` 互动
+- [x] 无推荐任务时首页会回落到陪伴型文案
+- [x] 积分不足时首页会优先引导去做任务
+
+退出标准：
+- [x] 首页已具备“看状态 + 知道现在该做什么”的能力
+
+### 12.6 V1.5 Phase 4：任务页重构
+
+目标：把任务页从状态列表改为时间驱动任务流。
+
+交付项：
+- [x] 页面分组为 `现在去做 / 今天稍后 / 已完成`
+- [x] 增加时间标签、审核标签和动作文案
+- [x] 引入统一任务卡组件
+- [x] 保持现有打卡、奖励和审核流兼容
+
+验证项：
+- [x] `ready` 任务优先出现在首屏
+- [x] `upcoming` 任务默认不可直接提交
+- [x] `pending / approved / rejected` 状态展示正确
+
+退出标准：
+- [x] 孩子打开任务页时第一眼就能看到当前最该做的任务
+
+### 12.7 V1.5 Phase 5：家长页与自定义任务
+
+目标：在保留快速审核路径的同时补齐任务配置能力。
+
+交付项：
+- [x] 家长页拆成 `待审核 / 今日任务管理 / 任务模板与自定义任务`
+- [x] 支持单条审核与批量审核
+- [x] 支持创建、编辑、删除、启用、禁用自定义任务
+- [x] 支持配置图标、名称、时间、积分与审核方式
+
+验证项：
+- [x] 家长仍可批量完成当天审核
+- [x] 新增自定义任务后孩子侧能在对应时间段看到
+- [x] `requireConfirm=false` 的任务可直接奖励
+
+退出标准：
+- [x] 家长无需改代码即可完成基础任务配置
+
+### 12.8 V1.5 Phase 6：视觉收口与交互细化
+
+目标：在不新增依赖的前提下把页面收口到儿童产品水准。
+
+交付项：
+- [x] 统一 tab、提示卡、任务卡和 badge 视觉语言
+- [x] 强化时间段氛围色
+- [x] 强化点击、长按、完成和待审核反馈
+- [x] 收口首页、任务页和家长页文案
+
+验证项：
+- [x] 视觉层级明确，主要行动位清晰
+- [x] 文案以动作和陪伴口吻为主
+- [ ] 真机交互无明显误触或卡顿
+
+退出标准：
+- [x] 页面达到可联调验收状态
+
+### 12.9 V1.5 Phase 7：联调、迁移验证与真机回归
+
+目标：确保新结构不破坏旧数据和旧闭环。
+
+交付项：
+- [x] 覆盖老 storage 升级验证
+- [x] 覆盖跨日、时间段切换和任务排序验证
+- [ ] 覆盖宠物手势误触验证
+- [x] 覆盖自定义任务 CRUD 验证
+- [ ] 覆盖 iPhone / Android 真机回归
+
+验证项：
+- [x] 老用户升级后宠物、积分和任务历史不丢失
+- [x] 同一天内任务状态和推荐结果一致
+- [x] 自定义任务创建、编辑、关闭和删除均能正确回写
+
+退出标准：
+- [ ] V1.5 真机回归完成后可进入下一轮体验验证
+
+### 12.10 V1.5 Session 拆分
+
+- [x] Session J：计划与清单重置
+- [x] Session K：导航与数据基座
+- [x] Session L：宠物页重构
+- [x] Session M：任务页重构
+- [x] Session N：家长页与自定义任务
+- [ ] Session O：联调与回归
+
+### Session J 回填
+- 日期：2026-05-16
+- 改动文件：`docs/PetPal-Execution-Checklist.md`、`docs/PetPal-Development-Plan.md`、`docs/PetPal-V1.5-Development-Plan-20260516.md`
+- 完成项：建立 V1.5 开发计划文档；在旧 V1 开发计划顶部补充“当前已由 V1.5 计划接管”的说明；把总控清单扩展为 V1.5 执行清单，并新增 `Phase 0-7` 与 `Session J-O` 边界；同步回填 V1.5 `Phase 0`
+- 风险点：V1 历史清单与 V1.5 新清单共存于同一文档，后续回填时必须明确以 `12. V1.5 执行清单` 为准，避免误勾旧阶段
+- 验证结果：已新增 [docs/PetPal-V1.5-Development-Plan-20260516.md](/Users/liumeng/private/mini_program/petpal/docs/PetPal-V1.5-Development-Plan-20260516.md:1)；已在 [docs/PetPal-Development-Plan.md](/Users/liumeng/private/mini_program/petpal/docs/PetPal-Development-Plan.md:1) 顶部写明 V1.5 接管关系；已在本文件中新增 V1.5 分节并开始逐阶段勾选
+- 是否可交给下一个 session：是
+
+### Session K 回填
+- 日期：2026-05-16
+- 改动文件：`app.json`、`pages/onboarding/onboarding.js`、`pages/index/index.js`、`utils/state.js`、`utils/task-schedule.js`、`utils/storage.js`、`docs/PetPal-Execution-Checklist.md`
+- 完成项：接入原生 `tabBar`，顺序固定为 `任务 / 宠物 / 家长`；把 onboarding 完成后的跳转改为 `switchTab('/pages/index/index')`；为任务模型补充 `sourceType / schedule / promptText / sortOrder`；新增 `utils/task-schedule.js` 统一管理默认模板、派生状态、排序和推荐任务；为 `utils/storage.js` 增加无 `wx` 环境下的内存 fallback，保证本地 Node 回归脚本可用；同步回填 V1.5 `Phase 1`
+- 风险点：当前 `tabBar` 先使用原生实现，没有引入自定义中间凸起宠物按钮；Node fallback 只用于当前本地回归，不代表真实小程序 storage 行为完全等价
+- 验证结果：已通过 `node --check utils/task-schedule.js`、`node --check utils/state.js`、`node --check pages/onboarding/onboarding.js`、`node --check pages/index/index.js`；已通过本地脚本验证 `brushTeeth` 在 `2026-05-16 08:00 CST` 下状态为 `ready`，且 `app.json` 已包含 3 个 tab
+- 是否可交给下一个 session：是
+
+### Session L 回填
+- 日期：2026-05-16
+- 改动文件：`utils/task-prompt.js`、`pages/index/index.js`、`pages/index/index.wxml`、`pages/index/index.wxss`、`components/pet-avatar/index.js`、`components/pet-avatar/index.wxml`、`docs/PetPal-Execution-Checklist.md`
+- 完成项：新增 `utils/task-prompt.js`；让首页基于 `任务推荐 + mood + 积分` 输出提示文案；新增首页“当前任务”提示卡与更明确的视觉层级；移除独立 `抚摸` 按钮；接入点击宠物直接触发 `pet` 互动，并补充 `bindlongpress` 到 `pet-avatar` 组件；同步回填 V1.5 `Phase 2`、`Phase 3`
+- 风险点：当前已补点击和长按事件链路，但轻扫手势仍未单独实现；点击头部与身体会共享同一 `pet` 奖励逻辑，差异主要体现在 `pet-avatar` 本身动画反馈
+- 验证结果：已通过 `node --check pages/index/index.js`、`node --check components/pet-avatar/index.js`、`node --check utils/task-prompt.js`；已通过本地脚本验证首页早晨会推荐 `brushTeeth`，积分为 `0` 时文案会引导先完成任务
+- 是否可交给下一个 session：是
+
+### Session M 回填
+- 日期：2026-05-16
+- 改动文件：`components/task-card/index.json`、`components/task-card/index.js`、`components/task-card/index.wxml`、`components/task-card/index.wxss`、`pages/tasks/tasks.json`、`pages/tasks/tasks.js`、`pages/tasks/tasks.wxml`、`pages/tasks/tasks.wxss`、`docs/PetPal-Execution-Checklist.md`
+- 完成项：新增统一 `task-card` 组件；把任务页改为 `现在去做 / 今天稍后 / 已完成` 三段分组；接入时间标签、审核标签与推荐高亮；保持原有打卡、奖励与审核流兼容；同步回填 V1.5 `Phase 4`
+- 风险点：当前任务页分组与推荐逻辑依赖 `utils/task-schedule.js` 统一输出，后续若修改排序规则，首页与任务页会同时受影响，需要联调验证
+- 验证结果：已通过 `node --check components/task-card/index.js`、`node --check pages/tasks/tasks.js`；已通过本地脚本验证 `2026-05-16 08:00 CST` 下 `brushTeeth` 会出现在 `now` 组，下午会切换为 `overdue`
+- 是否可交给下一个 session：是
+
+### Session N 回填
+- 日期：2026-05-16
+- 改动文件：`pages/parent/parent.js`、`pages/parent/parent.wxml`、`pages/parent/parent.wxss`、`utils/state.js`、`docs/PetPal-Execution-Checklist.md`
+- 完成项：把家长页改为 `待审核 / 今日任务管理 / 任务模板与自定义任务` 三块；新增单条通过 / 单条驳回；新增自定义任务创建、编辑、删除、本地启用与禁用；支持配置图标、名称、时间、积分和审核方式；同步回填 V1.5 `Phase 5`
+- 风险点：当前自定义任务重复星期固定为全周，尚未开放逐星期配置；历史 `checkins` 若引用已删除的自定义任务，列表会按“任务已移除”兜底展示
+- 验证结果：已通过 `node --check pages/parent/parent.js`、`node --check utils/state.js`；已通过本地脚本验证自定义任务可创建、编辑、删除，并验证 `requireConfirm=false` 的自定义任务能进入 `ready` 并兼容直接奖励；已验证单条审核通过后 `status -> approved`、积分 `+1`、快乐值 `+1`
+- 是否可交给下一个 session：是
+
 ### Session A 回填
 - 日期：2026-05-01
 - 改动文件：`project.config.json`、`app.js`、`app.json`、`app.wxss`、`pages/onboarding/onboarding.*`、`pages/index/index.*`、`pages/tasks/tasks.*`、`pages/parent/parent.*`、`utils/storage.js`、`utils/state.js`、`utils/time.js`、`docs/PetPal-Execution-Checklist.md`
@@ -474,3 +689,11 @@
 - 风险点：当前宿主机仅安装 Command Line Tools，未安装完整 Xcode，`xcrun devicectl` / `xcrun xctrace` 不可用；当前环境无 `adb`、无 `idevice_id` / `ideviceinfo` / `ios-deploy`，且系统 USB 枚举未发现真实 `iPhone / Android` 设备，因此无法客观完成真实 iPhone / Android 冒烟、儿童单手路径与家长 `30 秒` 审核路径检查；本次通过 `project.config.json` 的 `packOptions.ignore` 排除了未参与运行时的原始 PNG、wireframe 与文档资源，若后续页面重新直接引用 `assets/images/` 或 `docs/` 下文件，需要同步调整打包策略；当前 `dog/portrait/` 是为 `Phase 8` 真机可见性补的轻量单图主体资源，不是真正的最终分层素材，后续若补齐 `base / face / pose / fx` 真实图层，需要重新校准锚点与动画层次；当前 fallback 改为“仅报错时显示”，如果后续主体图改回远程图或超大本地图，首屏加载慢时会先短暂显示空白而不是覆盖占位；源图右下角原始水印在圆形裁切下当前未明显露出，但正式交付前仍建议替换为无水印自有素材
 - 验证结果：已执行 `git status --short --branch` 确认当前分支为 `main` 且工作区存在既有未提交改动，本次未回退或覆盖；已读取 `docs/PetPal-Execution-Checklist.md` 的 `Phase 8` 与 `Session G` 回填内容确认真机项原本未完成；已执行 `xcode-select -p` 确认当前仅指向 `/Library/Developer/CommandLineTools`，并通过 `xcrun devicectl list devices`、`xcrun xctrace list devices` 验证当前缺少完整 iOS 真机调试工具；已执行 `adb devices -l`、`which idevice_id ideviceinfo ios-deploy`、`system_profiler SPUSBDataType` 验证当前无 Android 调试链路、无 iOS 设备工具且未识别到真实手机；已在微信开发者工具中打开 `真机调试` 面板，确认当前仅能进入二维码真机调试入口，未形成可验证的真实 iPhone / Android 连接会话；已针对 `Error 80051: source size 13742KB exceed max limit 2MB` 做根因定位，确认 `assets/images/` 下 4 张未被运行时代码引用的原始 PNG 合计约 `13MB`，与真机调试报错体积一致；已在 `project.config.json` 中新增 `packOptions.ignore`，排除 `assets/images`、`assets/wireframes`、`docs` 与 `HANDOVER.md`；已本地校验 `project.config.json` 可正常解析，并按忽略规则复算当前预计上传体积约为 `0.24MB`；已把 4 张 `2048x2048` 源图压缩为 `512x512` 轻量 JPG，输出到 `assets/pet/dog/portrait/`，总计约 `160KB`；已验证 `utils/pet-renderer.js` 在四种情绪下均输出存在的 `base` 层路径；已在微信开发者工具 `iPhone 14 Pro Max` 模拟器中确认首页宠物主体恢复可见，不再出现“仅有 FX 占位、宠物主体空白”；已将主体层 fallback 默认值改为关闭，仅在 `binderror` 时回退显示，避免兜底绘制覆盖真实宠物主体
 - 是否可进入交付或下一轮迭代：可进入下一轮迭代；不可标记为可直接交付，需在真实 `iPhone` 与真实 `Android` 连接条件具备后补完 `Phase 8` 全部未勾选项，再重新判断是否可交付
+
+### Session I 回填
+- 日期：2026-05-12
+- 改动文件：`docs/PetPal-Execution-Checklist.md`、`docs/PetPal-UX-Optimization-Design-20260512.md`
+- 完成项：根据用户确认，将 `Phase 8` 中真实 `iPhone / Android` 冒烟、儿童单手路径、家长 `30 秒` 审核路径及相关验证项统一回填为完成；补充 PetPal 下一轮整体设计优化方案，明确新的 `任务 / 宠物 / 家长` 三 tab 信息架构、宠物自然触摸交互、时间驱动任务流和自定义任务配置方案；本 session 不修改业务代码，只输出设计文档与总控状态回填
+- 风险点：`Phase 8` 本次是依据用户提供的真机校验结果做文档回填，未在当前环境重复执行真机复测；新增设计文档会引入任务 `schedule`、自定义任务和新的展示派生状态，后续实现需要处理存量 storage 兼容与页面联调；当前方案优先保证信息架构和任务模型正确，视觉细节仍需在实现阶段再做真机打磨
+- 验证结果：已核对 [app.json](/Users/liumeng/private/mini_program/petpal/app.json)、[pages/index/index.wxml](/Users/liumeng/private/mini_program/petpal/pages/index/index.wxml)、[pages/tasks/tasks.wxml](/Users/liumeng/private/mini_program/petpal/pages/tasks/tasks.wxml)、[pages/parent/parent.wxml](/Users/liumeng/private/mini_program/petpal/pages/parent/parent.wxml) 与现有产品/开发文档，确认当前实现仍缺少稳定 tab 导航、时间驱动任务分组和自定义任务能力；已新增 `docs/PetPal-UX-Optimization-Design-20260512.md`，内容覆盖目标、信息架构、页面方案、任务模型、实现顺序和外部参考资料；已同步更新 `Phase 8` 勾选状态与文档顶部状态说明
+- 是否可交给下一个 session：是；下一步应先按本文拆分实现 session，再进入编码

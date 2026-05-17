@@ -1,8 +1,8 @@
 {
   "pages": [
     "pages/onboarding/onboarding",
-    "pages/index/index",
     "pages/tasks/tasks",
+    "pages/index/index",
     "pages/parent/parent"
   ],
   "window": {
@@ -11,6 +11,26 @@
     "navigationBarTextStyle": "black",
     "backgroundColor": "#FFFDF8",
     "backgroundTextStyle": "light"
+  },
+  "tabBar": {
+    "color": "#8A816F",
+    "selectedColor": "#E08A2E",
+    "backgroundColor": "#FFF8EE",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/tasks/tasks",
+        "text": "任务"
+      },
+      {
+        "pagePath": "pages/index/index",
+        "text": "宠物"
+      },
+      {
+        "pagePath": "pages/parent/parent",
+        "text": "家长"
+      }
+    ]
   },
   "style": "v2"
 }
