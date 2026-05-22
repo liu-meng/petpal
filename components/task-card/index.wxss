@@ -11,8 +11,19 @@
 }
 
 .task-card.is-highlighted {
-  box-shadow: 0 22rpx 48rpx rgba(233, 145, 47, 0.18);
-  border: 2rpx solid rgba(233, 145, 47, 0.18);
+  box-shadow: 0 22rpx 48rpx rgba(233, 145, 47, 0.22);
+  border: 3rpx solid #f5b94e;
+  background: linear-gradient(135deg, #fffef8 0%, #fff8e0 100%);
+  animation: highlight-pulse 2s ease-in-out infinite;
+}
+
+@keyframes highlight-pulse {
+  0%, 100% {
+    box-shadow: 0 22rpx 48rpx rgba(233, 145, 47, 0.22);
+  }
+  50% {
+    box-shadow: 0 22rpx 56rpx rgba(233, 145, 47, 0.32);
+  }
 }
 
 .task-card.is-clickable:active {
@@ -21,6 +32,27 @@
 
 .task-card.is-locked {
   opacity: 0.88;
+}
+
+.task-card__highlight-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: 8rpx 16rpx;
+  margin-bottom: 12rpx;
+  border-radius: 999rpx;
+  background: linear-gradient(135deg, #ffd76b 0%, #f5b94e 100%);
+  box-shadow: 0 4rpx 12rpx rgba(233, 145, 47, 0.2);
+}
+
+.task-card__highlight-icon {
+  font-size: 22rpx;
+}
+
+.task-card__highlight-text {
+  font-size: 22rpx;
+  font-weight: 700;
+  color: #7a4f1a;
 }
 
 .task-card__main {

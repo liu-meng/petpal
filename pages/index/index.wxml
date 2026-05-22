@@ -37,13 +37,13 @@
   <view class="index-card index-mission-card" bindtap="handleGoTasks">
     <view class="index-mission-card__head">
       <text class="index-mission-card__eyebrow">当前任务</text>
-      <text class="index-mission-card__cta">去任务页 ›</text>
+      <text class="index-mission-card__cta">去看看 ›</text>
     </view>
     <text class="index-mission-card__title">
       {{recommendedTaskLabel ? recommendedTaskLabel : '今天先看看要做什么'}}
     </text>
     <text class="index-mission-card__desc">
-      {{pendingTaskCount > 0 ? '还有任务在等你完成，先做最合适的一件。' : '今天的主要任务都完成啦，回来陪陪它吧。'}}
+      {{pendingTaskCount > 0 ? '还有 ' + pendingTaskCount + ' 个任务在等你，先做最合适的一件吧！' : '今天的主要任务都完成啦，回来陪陪它吧。'}}
     </text>
   </view>
 

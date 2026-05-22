@@ -2,6 +2,10 @@
   class="task-card {{task.badgeClass}} {{task.canCheckin ? 'is-clickable' : 'is-locked'}} {{highlighted ? 'is-highlighted' : ''}}"
   bindtap="handleTap"
 >
+  <view wx:if="{{highlighted}}" class="task-card__highlight-tag">
+    <text class="task-card__highlight-icon">🎯</text>
+    <text class="task-card__highlight-text">接下来做这个</text>
+  </view>
   <view class="task-card__main">
     <text class="task-card__icon">{{task.icon}}</text>
     <view class="task-card__content">

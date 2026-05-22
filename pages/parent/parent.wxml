@@ -61,14 +61,14 @@
       <view class="parent-section__head">
         <view>
           <text class="parent-card__title">待审核列表</text>
-          <text class="parent-card__desc">审核通过会同步发放积分和快乐值，驳回后孩子可以重新打卡。</text>
+          <text class="parent-card__desc">通过后积分和快乐值会马上给小朋友，驳回后小朋友可以重新打卡。</text>
         </view>
-        <text class="parent-section__count">{{pendingCount}} 条</text>
+        <text class="parent-section__count">{{pendingCount}} 个</text>
       </view>
 
       <view wx:if="{{pendingCount > 0}}" class="parent-bulk-actions">
-        <button class="parent-bulk-actions__button is-approve" bindtap="handleApproveAll">全部通过</button>
-        <button class="parent-bulk-actions__button is-reject" bindtap="handleRejectAll">全部驳回</button>
+        <button class="parent-bulk-actions__button is-approve" bindtap="handleApproveAll">✓ 全部通过</button>
+        <button class="parent-bulk-actions__button is-reject" bindtap="handleRejectAll">↺ 全部再来</button>
       </view>
 
       <view wx:if="{{pendingCount > 0}}" class="parent-pending-list">
@@ -90,14 +90,14 @@
               data-date="{{item.date}}"
               data-created-at="{{item.createdAt}}"
               bindtap="handleApproveOne"
-            >通过</button>
+            >✓ 可以啦</button>
             <button
               class="parent-pending-item__action is-reject"
               data-task-id="{{item.taskId}}"
               data-date="{{item.date}}"
               data-created-at="{{item.createdAt}}"
               bindtap="handleRejectOne"
-            >驳回</button>
+            >↺ 再做一次</button>
           </view>
         </view>
       </view>
@@ -105,7 +105,7 @@
       <view wx:else class="parent-empty">
         <text class="parent-empty__emoji">✨</text>
         <text class="parent-empty__title">当前没有待审核任务</text>
-        <text class="parent-empty__desc">孩子提交新打卡后，这里会自动出现。</text>
+        <text class="parent-empty__desc">小朋友提交新打卡后，这里会自动出现。</text>
       </view>
     </view>
 
@@ -123,7 +123,7 @@
             <text class="parent-task-item__icon">{{item.icon}}</text>
             <view class="parent-task-item__content">
               <text class="parent-task-item__label">{{item.label}}</text>
-              <text class="parent-task-item__meta">{{item.scheduleLabel}} · +{{item.points}} 分 · {{item.requireConfirm ? '需审核' : '直接奖励'}}</text>
+              <text class="parent-task-item__meta">{{item.scheduleLabel}} · +{{item.points}} 分 · {{item.requireConfirm ? '爸妈看' : '直接得'}}</text>
             </view>
           </view>
 
@@ -156,7 +156,7 @@
       <view class="parent-section__head">
         <view>
           <text class="parent-card__title">任务模板与自定义任务</text>
-          <text class="parent-card__desc">先用预设任务，也可以新增更贴合家庭作息的自定义任务。</text>
+          <text class="parent-card__desc">先用这些预设任务，也可以新增更贴合家庭作息的任务。</text>
         </view>
         <button class="parent-create-task-button" bindtap="openCreateTaskForm">+ 添加任务</button>
       </view>
@@ -208,7 +208,7 @@
 
         <view class="parent-task-form__switches">
           <view class="parent-task-form__switch-item">
-            <text class="parent-task-form__switch-label">需要家长确认</text>
+            <text class="parent-task-form__switch-label">需要爸爸妈妈看</text>
             <switch checked="{{customTaskDraft.requireConfirm}}" color="#efb24a" bindchange="handleDraftRequireConfirmChange" />
           </view>
           <view class="parent-task-form__switch-item">

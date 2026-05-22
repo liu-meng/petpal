@@ -4,14 +4,14 @@
     <text class="tasks-hero__title">现在先做最重要的一件事</text>
     <text class="tasks-hero__date">{{currentDate}}</text>
     <text class="tasks-hero__summary">
-      待打卡 {{todoCount}} · 待确认 {{pendingCount}} · 已完成 {{approvedCount}}
+      要做的 {{todoCount}} · 等爸爸妈妈看 {{pendingCount}} · 完成啦 {{approvedCount}}
     </text>
   </view>
 
   <view wx:if="{{taskCount > 0}}" class="tasks-list">
     <view wx:if="{{nowTasks.length > 0}}" class="tasks-section">
       <view class="tasks-section__head">
-        <text class="tasks-section__title">现在去做</text>
+        <text class="tasks-section__title">🎯 现在去做</text>
         <text class="tasks-section__count">{{nowTasks.length}} 项</text>
       </view>
       <view class="tasks-section__list">
@@ -27,7 +27,7 @@
 
     <view wx:if="{{laterTasks.length > 0}}" class="tasks-section">
       <view class="tasks-section__head">
-        <text class="tasks-section__title">今天稍后</text>
+        <text class="tasks-section__title">📅 今天稍后</text>
         <text class="tasks-section__count">{{laterTasks.length}} 项</text>
       </view>
       <view class="tasks-section__list">
@@ -42,7 +42,7 @@
 
     <view wx:if="{{doneTasks.length > 0}}" class="tasks-section">
       <view class="tasks-section__head">
-        <text class="tasks-section__title">已经完成</text>
+        <text class="tasks-section__title">✅ 完成啦</text>
         <text class="tasks-section__count">{{doneTasks.length}} 项</text>
       </view>
       <view class="tasks-section__list">
@@ -59,6 +59,6 @@
   <view wx:else class="tasks-empty">
     <text class="tasks-empty__emoji">🫧</text>
     <text class="tasks-empty__title">今天没有可打卡任务</text>
-    <text class="tasks-empty__desc">家长还没有开启任务，先回去陪陪宠物吧。</text>
+    <text class="tasks-empty__desc">爸爸妈妈还没有开启任务，先回去陪宠物玩吧。</text>
   </view>
 </view>

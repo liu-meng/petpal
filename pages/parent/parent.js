@@ -21,6 +21,29 @@ function hasValidParentPin(state) {
   );
 }
 
+/**
+ * 过滤任务名称中的危险字符
+ * 只保留中文、英文字母、数字、emoji 和常用标点
+ */
+function sanitizeTaskLabel(label) {
+  if (!label) return '';
+  // 移除 < > " ' \ 等可能造成显示问题的字符
+  return String(label)
+    .replace(/[<>"'\\]/g, '')
+    .slice(0, 12);
+}
+
+/**
+ * 计算字符串的视觉长度（emoji 算 2 个字符）
+ */
+function getVisualLength(str) {
+  let length = 0;
+  for (const char of String(str)) {
+    length += char.codePointAt(0) > 0xFFFF ? 2 : 1;
+  }
+  return length;
+}
+
 function syncGlobalState(state) {
   const app = getApp();
 
@@ -329,9 +352,28 @@ Page({
   },
 
   handleDraftLabelInput(event) {
-    this.setData({
-      'customTaskDraft.label': String(event.detail.value || '').slice(0, 12),
-    });
+    const rawValue = String(event.detail.value || '');
+    // 过滤危险字符并限制长度
+    const sanitized = sanitizeTaskLabel(rawValue);
+    // 额外检查视觉长度（emoji 占位多）
+    if (getVisualLength(sanitized) > 12) {
+      // 从后往前截断直到符合长度要求
+      let result = '';
+      let currentLen = 0;
+      for (const char of sanitized) {
+        const charLen = char.codePointAt(0) > 0xFFFF ? 2 : 1;
+        if (currentLen + charLen > 12) break;
+        result += char;
+        currentLen += charLen;
+      }
+      this.setData({
+        'customTaskDraft.label': result,
+      });
+    } else {
+      this.setData({
+        'customTaskDraft.label': sanitized,
+      });
+    }
   },
 
   handleDraftStartInput(event) {
