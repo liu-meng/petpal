@@ -242,6 +242,14 @@ Page({
   },
 
   onShow() {
+    // 同步自定义 tabBar 选中状态（家长 tab = 2）
+    if (typeof this.getTabBar === 'function' && this.getTabBar()) {
+      this.getTabBar().setData({ selected: 2 });
+      // 刷新角标（待审核数量）
+      if (this.getTabBar().updateBadge) {
+        this.getTabBar().updateBadge();
+      }
+    }
     this.syncPageState(null, {
       preserveAuth: this.data.isAuthed,
     });

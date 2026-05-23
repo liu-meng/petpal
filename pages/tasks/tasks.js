@@ -95,6 +95,10 @@ Page({
   },
 
   onShow() {
+    // 同步自定义 tabBar 选中状态（任务 tab = 0）
+    if (typeof this.getTabBar === 'function' && this.getTabBar()) {
+      this.getTabBar().setData({ selected: 0 });
+    }
     this.syncPageState();
   },
 

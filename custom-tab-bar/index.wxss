@@ -1,0 +1,101 @@
+/* custom-tab-bar/index.wxss */
+/* 自定义 TabBar - 童趣风格 */
+
+.tab-bar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  height: 100rpx;
+  padding-bottom: env(safe-area-inset-bottom);
+  background-color: #FFF8EE;
+  border-top: 1rpx solid rgba(240, 210, 170, 0.5);
+  box-shadow: 0 -2rpx 12rpx rgba(0, 0, 0, 0.05);
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 999;
+}
+
+.tab-bar__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  height: 100%;
+  position: relative;
+  overflow: visible; /* 允许图标放大后溢出 */
+}
+
+.tab-bar__item:active {
+  transform: scale(0.92);
+}
+
+.tab-bar__icon {
+  width: 80rpx;
+  height: 80rpx;
+  margin-bottom: 2rpx;
+  transition: all 0.25s ease;
+  transform-origin: center center;
+}
+
+/* 选中态：放大 + 跳动动画 */
+.tab-bar__icon.is-active {
+  width: 96rpx;
+  height: 96rpx;
+  animation: icon-bounce 0.4s ease;
+}
+
+@keyframes icon-bounce {
+  0% {
+    transform: scale(1.0);
+  }
+  40% {
+    transform: scale(1.25);
+  }
+  70% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1.15);
+  }
+}
+
+.tab-bar__text {
+  font-size: 18rpx;
+  color: #8A816F;
+  line-height: 1.4;
+  transition: color 0.3s ease;
+}
+
+.tab-bar__item.is-active .tab-bar__text {
+  color: #E08A2E;
+  font-weight: 600;
+}
+
+/* 角标 */
+.tab-bar__badge {
+  position: absolute;
+  top: 0;
+  right: 50%;
+  margin-right: -36rpx;
+  min-width: 28rpx;
+  height: 28rpx;
+  padding: 0 6rpx;
+  border-radius: 14rpx;
+  background-color: #FF6B6B;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  box-shadow: 0 2rpx 4rpx rgba(255, 107, 107, 0.4);
+}
+
+.tab-bar__badge-text {
+  font-size: 16rpx;
+  color: #FFFFFF;
+  font-weight: 600;
+  line-height: 1;
+}
