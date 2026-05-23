@@ -14,7 +14,6 @@ const { getPetRenderModel } = require('../../utils/pet-renderer');
 const {
   buildPetPrompt,
 } = require('../../utils/task-prompt');
-const { formatDate } = require('../../utils/time');
 
 function shouldEnablePetAnimation() {
   try {
@@ -92,6 +91,20 @@ const MOOD_META = {
   },
 };
 
+/**
+ * 根据积分计算等级（每 20 分升一级）
+ */
+function calcLevel(points) {
+  return Math.max(1, Math.floor((points || 0) / 20) + 1);
+}
+
+/**
+ * 根据积分计算星星数（每级最多 5 颗星）
+ */
+function calcStars(points) {
+  return Math.max(0, (points || 0) % 20);
+}
+
 function cloneState(state) {
   return JSON.parse(JSON.stringify(state));
 }
@@ -129,6 +142,8 @@ function buildViewState(state, activeAction) {
     state: sourceState,
     petName: pet.name || '旺财',
     points,
+    petLevel: calcLevel(points),
+    starCount: calcStars(points),
     pet,
     mood,
     activeAction: activeAction || 'idle',
@@ -152,6 +167,8 @@ Page({
   data: {
     petName: '旺财',
     points: 0,
+    petLevel: 1,
+    starCount: 0,
     pet: {
       type: 'dog',
       hunger: 10,
@@ -220,6 +237,8 @@ Page({
     this.setData({
       petName: viewState.petName,
       points: viewState.points,
+      petLevel: viewState.petLevel,
+      starCount: viewState.starCount,
       pet: viewState.pet,
       mood: viewState.mood,
       activeAction: viewState.activeAction,
@@ -368,19 +387,9 @@ Page({
     }
   },
 
-  handleActionTap(event) {
-    const actionKey = event.detail && event.detail.action;
-    const isDisabled = !!(event.detail && event.detail.disabled);
-
+  /** 执行互动操作（喂食/玩耍）的通用逻辑 */
+  doAction(actionKey) {
     if (!ACTION_EFFECTS[actionKey]) {
-      return;
-    }
-
-    if (isDisabled) {
-      wx.showToast({
-        title: '积分不够了，先去完成任务吧！',
-        icon: 'none',
-      });
       return;
     }
 
@@ -440,6 +449,21 @@ Page({
       this.isPetActionPlaying = false;
       this.applyViewState(savedState, 'idle');
     }
+  },
+
+  /** 喂食按钮点击 */
+  handleFeedTap() {
+    this.doAction('feed');
+  },
+
+  /** 玩耍按钮点击 */
+  handlePlayTap() {
+    this.doAction('play');
+  },
+
+  /** 抚摸快捷按钮点击 */
+  handlePetQuickTap() {
+    this.handlePetTap({ detail: { hitArea: 'body' } });
   },
 
   handleGoTasks() {

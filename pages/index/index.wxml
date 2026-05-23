@@ -1,17 +1,25 @@
 <view class="index-page">
-  <view class="index-header">
-    <view class="index-title">
-      <text class="index-title__emoji">🐕</text>
-      <text class="index-title__name">{{petName}}</text>
+  <!-- 顶部栏：压缩，宠物名+等级+积分 -->
+  <view class="index-topbar">
+    <view class="index-topbar__left">
+      <text class="index-topbar__emoji">🐕</text>
+      <text class="index-topbar__name">{{petName}}</text>
     </view>
-    <text class="index-header__period">{{recommendedTaskLabel ? '现在先做' : '今天陪伴中'}}</text>
+    <view class="index-topbar__right">
+      <text class="index-topbar__level">Lv{{petLevel}}</text>
+      <text class="index-topbar__stars">⭐{{starCount}}</text>
+    </view>
   </view>
 
-  <view class="index-card index-pet-card">
-    <view class="index-pet-stage-meta">
+  <!-- 宠物主视觉区（核心） -->
+  <view class="index-pet-zone">
+    <!-- 情绪标签 + 提示 -->
+    <view class="index-pet-meta">
       <view class="index-mood-badge">{{moodLabel}}</view>
       <text class="index-mood-hint">{{moodHint}}</text>
     </view>
+
+    <!-- 宠物头像（放大） -->
     <view class="index-pet-avatar">
       <pet-avatar
         id="petAvatar"
@@ -19,7 +27,7 @@
         mood="{{mood}}"
         hunger="{{pet.hunger}}"
         happiness="{{pet.happiness}}"
-        size="420"
+        size="520"
         enableAnimation="{{petAnimationEnabled}}"
         bind:pettap="handlePetTap"
         bind:petlongpress="handlePetLongPress"
@@ -31,69 +39,88 @@
         class="index-float-text index-float-text--stat"
       >{{statFloatText}}</text>
     </view>
+
+    <!-- 宠物气泡文案（情绪化） -->
     <view class="index-bubble">{{bubbleText}}</view>
   </view>
 
-  <view class="index-card index-mission-card" bindtap="handleGoTasks">
-    <view class="index-mission-card__head">
-      <text class="index-mission-card__eyebrow">当前任务</text>
-      <text class="index-mission-card__cta">去看看 ›</text>
+  <!-- 主 CTA 按钮：去完成任务 -->
+  <view
+    wx:if="{{recommendedTaskLabel}}"
+    class="index-cta"
+    hover-class="index-cta--pressing"
+    bindtap="handleGoTasks"
+  >
+    <text class="index-cta__icon">🎯</text>
+    <text class="index-cta__text">{{recommendedTaskLabel}}</text>
+    <text class="index-cta__arrow">›</text>
+  </view>
+  <view
+    wx:else
+    class="index-cta index-cta--done"
+    hover-class="index-cta--pressing"
+    bindtap="handleGoTasks"
+  >
+    <text class="index-cta__icon">✨</text>
+    <text class="index-cta__text">今天任务都完成啦！</text>
+    <text class="index-cta__arrow">›</text>
+  </view>
+
+  <!-- 状态条（紧凑两行） -->
+  <view class="index-stats-row">
+    <view class="index-stat-item">
+      <view class="index-stat-item__header">
+        <text class="index-stat-item__icon">🍖</text>
+        <text class="index-stat-item__label">饱食度</text>
+        <text class="index-stat-item__value">{{pet.hunger}}/10</text>
+      </view>
+      <view class="index-stat-item__track">
+        <view class="index-stat-item__fill" style="width: {{pet.hunger * 10}}%; background: #F5C451;"></view>
+      </view>
     </view>
-    <text class="index-mission-card__title">
-      {{recommendedTaskLabel ? recommendedTaskLabel : '今天先看看要做什么'}}
-    </text>
-    <text class="index-mission-card__desc">
-      {{pendingTaskCount > 0 ? '还有 ' + pendingTaskCount + ' 个任务在等你，先做最合适的一件吧！' : '今天的主要任务都完成啦，回来陪陪它吧。'}}
-    </text>
+    <view class="index-stat-item">
+      <view class="index-stat-item__header">
+        <text class="index-stat-item__icon">💛</text>
+        <text class="index-stat-item__label">快乐值</text>
+        <text class="index-stat-item__value">{{pet.happiness}}/10</text>
+      </view>
+      <view class="index-stat-item__track">
+        <view class="index-stat-item__fill" style="width: {{pet.happiness * 10}}%; background: #FF7DA8;"></view>
+      </view>
+    </view>
   </view>
 
-  <view class="index-card index-stats-card">
-    <stat-bar
-      icon="🍖"
-      label="饱食度"
-      value="{{pet.hunger}}"
-      max="10"
-      color="#ffb24d"
-    />
-    <stat-bar
-      icon="💛"
-      label="快乐值"
-      value="{{pet.happiness}}"
-      max="10"
-      color="#ff82a3"
-    />
+  <!-- 快捷互动按钮（轻量化圆形） -->
+  <view class="index-quick-actions">
+    <view
+      class="index-quick-btn {{feedDisabled ? 'is-disabled' : ''}}"
+      hover-class="{{feedDisabled ? '' : 'index-quick-btn--pressing'}}"
+      bindtap="handleFeedTap"
+    >
+      <text class="index-quick-btn__icon">🍖</text>
+      <text class="index-quick-btn__label">喂食</text>
+    </view>
+    <view
+      class="index-quick-btn {{playDisabled ? 'is-disabled' : ''}}"
+      hover-class="{{playDisabled ? '' : 'index-quick-btn--pressing'}}"
+      bindtap="handlePlayTap"
+    >
+      <text class="index-quick-btn__icon">🎾</text>
+      <text class="index-quick-btn__label">玩耍</text>
+    </view>
+    <view
+      class="index-quick-btn"
+      hover-class="index-quick-btn--pressing"
+      bindtap="handlePetQuickTap"
+    >
+      <text class="index-quick-btn__icon">🤚</text>
+      <text class="index-quick-btn__label">抚摸</text>
+    </view>
   </view>
 
-  <view class="index-points-card index-card">
-    <text class="index-points-card__label">💰 积分</text>
-    <text class="index-points-card__value">{{points}} 分</text>
-    <text
-      wx:if="{{pointsFloatVisible}}"
-      class="index-float-text index-float-text--points"
-    >{{pointsFloatText}}</text>
-  </view>
-
-  <view class="index-actions">
-    <action-btn
-      icon="🍖"
-      label="喂食"
-      cost-label="-1分"
-      action="feed"
-      disabled="{{feedDisabled}}"
-      bindtapaction="handleActionTap"
-    />
-    <action-btn
-      icon="🎾"
-      label="玩耍"
-      cost-label="-1分"
-      action="play"
-      disabled="{{playDisabled}}"
-      bindtapaction="handleActionTap"
-    />
-  </view>
-
-  <view class="index-touch-hint">
-    <text class="index-touch-hint__icon">🤲</text>
-    <text class="index-touch-hint__text">轻点或长按宠物就能摸摸它</text>
-  </view>
+  <!-- 积分浮动提示 -->
+  <text
+    wx:if="{{pointsFloatVisible}}"
+    class="index-float-text index-float-text--points"
+  >{{pointsFloatText}}</text>
 </view>
