@@ -208,6 +208,7 @@ Page({
       this.getTabBar().setData({ selected: 1 });
     }
     this.syncPageState();
+    this.refreshTabBar();
   },
 
   onUnload() {
@@ -258,6 +259,20 @@ Page({
 
   getPetAvatar() {
     return this.selectComponent('#petAvatar');
+  },
+
+  refreshTabBar() {
+    if (typeof this.getTabBar !== 'function') {
+      return;
+    }
+
+    const tabBar = this.getTabBar();
+
+    if (tabBar && typeof tabBar.updateIndicators === 'function') {
+      tabBar.updateIndicators();
+    } else if (tabBar && typeof tabBar.updateBadge === 'function') {
+      tabBar.updateBadge();
+    }
   },
 
   clearFeedbackTimers() {
@@ -312,6 +327,7 @@ Page({
 
     this.applyViewState(savedState, 'pet');
     this.showFloatFeedback('pet');
+    this.refreshTabBar();
   },
 
   handlePetLongPress() {
@@ -420,6 +436,7 @@ Page({
         icon: 'none',
       });
       this.applyViewState(savedState, 'idle');
+      this.refreshTabBar();
       return;
     }
 
@@ -453,6 +470,8 @@ Page({
       this.isPetActionPlaying = false;
       this.applyViewState(savedState, 'idle');
     }
+
+    this.refreshTabBar();
   },
 
   /** 喂食按钮点击 */

@@ -8,6 +8,8 @@
   min-height: 100vh;
   box-sizing: border-box;
   padding: 16rpx 24rpx 20rpx;
+  padding-bottom: 166rpx;
+  padding-bottom: calc(166rpx + env(safe-area-inset-bottom));
   background:
     radial-gradient(circle at top, #fff7dc 0%, #fffdf8 36%, #fff4e2 100%);
   display: flex;

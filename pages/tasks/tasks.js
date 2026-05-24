@@ -100,6 +100,7 @@ Page({
       this.getTabBar().setData({ selected: 0 });
     }
     this.syncPageState();
+    this.refreshTabBar();
   },
 
   onHide() {
@@ -114,6 +115,20 @@ Page({
     if (this.crossDayResetTimer) {
       clearTimeout(this.crossDayResetTimer);
       this.crossDayResetTimer = null;
+    }
+  },
+
+  refreshTabBar() {
+    if (typeof this.getTabBar !== 'function') {
+      return;
+    }
+
+    const tabBar = this.getTabBar();
+
+    if (tabBar && typeof tabBar.updateIndicators === 'function') {
+      tabBar.updateIndicators();
+    } else if (tabBar && typeof tabBar.updateBadge === 'function') {
+      tabBar.updateBadge();
     }
   },
 
@@ -220,6 +235,7 @@ Page({
 
     syncGlobalState(savedState);
     this.syncPageState(savedState);
+    this.refreshTabBar();
 
     wx.showToast({
       title: nextStatus === 'approved' ? '任务已完成' : '已提交，等待家长确认',

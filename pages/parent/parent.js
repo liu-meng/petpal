@@ -245,14 +245,11 @@ Page({
     // 同步自定义 tabBar 选中状态（家长 tab = 2）
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
       this.getTabBar().setData({ selected: 2 });
-      // 刷新角标（待审核数量）
-      if (this.getTabBar().updateBadge) {
-        this.getTabBar().updateBadge();
-      }
     }
     this.syncPageState(null, {
       preserveAuth: this.data.isAuthed,
     });
+    this.refreshTabBar();
   },
 
   onHide() {
@@ -274,6 +271,20 @@ Page({
       canSubmitPin: false,
       failedAttempts: 0,
     });
+  },
+
+  refreshTabBar() {
+    if (typeof this.getTabBar !== 'function') {
+      return;
+    }
+
+    const tabBar = this.getTabBar();
+
+    if (tabBar && typeof tabBar.updateIndicators === 'function') {
+      tabBar.updateIndicators();
+    } else if (tabBar && typeof tabBar.updateBadge === 'function') {
+      tabBar.updateBadge();
+    }
   },
 
   syncPageState(stateLike, options) {
@@ -473,6 +484,7 @@ Page({
       preserveAuth: true,
     });
     this.closeCreateTaskForm();
+    this.refreshTabBar();
 
     wx.showToast({
       title: draft.id ? '自定义任务已更新' : '自定义任务已添加',
@@ -552,6 +564,7 @@ Page({
     this.syncPageState(savedState, {
       preserveAuth: true,
     });
+    this.refreshTabBar();
 
     wx.showToast({
       title: status === 'approved' ? '已通过 1 项' : '已驳回 1 项',
@@ -585,6 +598,7 @@ Page({
         this.syncPageState(savedState, {
           preserveAuth: true,
         });
+        this.refreshTabBar();
 
         wx.showToast({
           title: '任务已删除',
@@ -625,6 +639,7 @@ Page({
       this.syncPageState(savedState, {
         preserveAuth: true,
       });
+      this.refreshTabBar();
 
       wx.showToast({
         title: 'PIN 已设置',
@@ -729,6 +744,7 @@ Page({
     this.syncPageState(savedState, {
       preserveAuth: true,
     });
+    this.refreshTabBar();
 
     wx.showToast({
       title: status === 'approved'
@@ -772,5 +788,6 @@ Page({
     this.syncPageState(savedState, {
       preserveAuth: true,
     });
+    this.refreshTabBar();
   },
 });

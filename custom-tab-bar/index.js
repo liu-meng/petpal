@@ -1,18 +1,18 @@
 // custom-tab-bar/index.js
-// 自定义 TabBar 组件 - 支持动画与角标
+// 自定义 TabBar 组件 - 支持动画与状态提示
+
+const {
+  buildTaskCollections,
+} = require('../utils/task-schedule');
 
 Component({
   /**
    * 组件的属性列表
    */
   properties: {
-    // 当前选中的 tab 索引（由页面 onShow 设置）
     selected: {
       type: Number,
-      value: 0,
-      observer(newVal) {
-        this.setData({ selected: newVal });
-      }
+      value: 0
     }
   },
 
@@ -21,28 +21,34 @@ Component({
    */
   data: {
     selected: 0,
-    animations: [], // 动画实例数组
+    animations: [],
     list: [
       {
         pagePath: '/pages/tasks/tasks',
-        text: '任务',
-        iconPath: '/assets/tab-icons/tasks.png?v=7',
-        selectedIconPath: '/assets/tab-icons/tasks-active.png?v=7',
-        badge: 0 // 角标数量
+        text: '做什么',
+        iconPath: '/assets/tab-icons/tasks.png',
+        selectedIconPath: '/assets/tab-icons/tasks-active.png',
+        badge: 0,
+        hasDot: false,
+        needsCare: false
       },
       {
         pagePath: '/pages/index/index',
         text: '宠物',
-        iconPath: '/assets/tab-icons/pet.png?v=7',
-        selectedIconPath: '/assets/tab-icons/pet-active.png?v=7',
-        badge: 0
+        iconPath: '/assets/tab-icons/pet.png',
+        selectedIconPath: '/assets/tab-icons/pet-active.png',
+        badge: 0,
+        hasDot: false,
+        needsCare: false
       },
       {
         pagePath: '/pages/parent/parent',
-        text: '家长',
-        iconPath: '/assets/tab-icons/parent.png?v=7',
-        selectedIconPath: '/assets/tab-icons/parent-active.png?v=7',
-        badge: 0
+        text: '爸爸妈妈',
+        iconPath: '/assets/tab-icons/parent.png',
+        selectedIconPath: '/assets/tab-icons/parent-active.png',
+        badge: 0,
+        hasDot: false,
+        needsCare: false
       }
     ]
   },
@@ -52,11 +58,8 @@ Component({
    */
   lifetimes: {
     attached() {
-      // 组件挂载后，初始化动画
       this._initAnimations();
-      
-      // 读取角标数据（待审核任务数量）
-      this._updateBadge();
+      this._updateIndicators();
     }
   },
 
@@ -68,8 +71,7 @@ Component({
      * 初始化点击动画
      */
     _initAnimations() {
-      // 预创建动画（实际点击时再启动）
-      const animations = this.data.list.map((_, index) => null);
+      const animations = this.data.list.map(() => null);
       this.setData({ animations });
     },
 
@@ -77,9 +79,10 @@ Component({
      * 切换 Tab
      */
     switchTab(e) {
-      const { index, path } = e.currentTarget.dataset;
+      const { path } = e.currentTarget.dataset;
+      const index = Number(e.currentTarget.dataset.index);
       const selected = this.data.selected;
-      
+
       // 避免重复点击当前 tab
       if (selected === index) {
         return;
@@ -87,11 +90,13 @@ Component({
 
       // 播放点击动画
       this._playClickAnimation(index);
+      this.setData({ selected: index });
 
       // 切换页面
       wx.switchTab({
         url: path,
-        fail(err) {
+        fail: (err) => {
+          this.setData({ selected });
           console.error('[TabBar] switchTab failed:', err);
         }
       });
@@ -116,32 +121,57 @@ Component({
     },
 
     /**
-     * 更新角标（待审核任务数量）
+     * 更新 tab 状态提示。
      */
-    _updateBadge() {
+    _updateIndicators() {
       try {
         const state = wx.getStorageSync('petpal_state') || {};
-        const checkinHistory = state.checkinHistory || [];
-        
-        // 统计 pending 状态的打卡数量
-        const pendingCount = checkinHistory.filter(c => c.status === 'pending').length;
-        
-        // 更新任务 tab 的角标
+        const checkins = Array.isArray(state.checkins) ? state.checkins : [];
+        const pendingCount = checkins.filter((checkin) => checkin && checkin.status === 'pending').length;
+        const collections = buildTaskCollections(
+          Array.isArray(state.tasks) ? state.tasks : [],
+          checkins,
+          Date.now()
+        );
+        const todoCount = collections.counts.actionable;
+        const pet = state.pet || {};
+        const petNeedsCare = !!state.initialized && (
+          Number(pet.hunger) <= 3 || Number(pet.happiness) <= 3
+        );
         const list = [...this.data.list];
-        list[0].badge = pendingCount; // 任务 tab 显示待审核数量
-        
+
+        list[0] = Object.assign({}, list[0], {
+          badge: 0,
+          hasDot: todoCount > 0,
+          needsCare: false
+        });
+        list[1] = Object.assign({}, list[1], {
+          badge: 0,
+          hasDot: false,
+          needsCare: petNeedsCare
+        });
+        list[2] = Object.assign({}, list[2], {
+          badge: pendingCount,
+          hasDot: false,
+          needsCare: false
+        });
+
         this.setData({ list });
       } catch (err) {
-        console.error('[TabBar] 更新角标失败:', err);
+        console.error('[TabBar] 更新状态提示失败:', err);
       }
     },
 
     /**
-     * 对外暴露：更新角标
-     * 页面可以通过 this.getTabBar().updateBadge() 调用
+     * 对外暴露：更新状态提示。
+     * 页面可以继续通过 this.getTabBar().updateBadge() 调用。
      */
+    updateIndicators() {
+      this._updateIndicators();
+    },
+
     updateBadge() {
-      this._updateBadge();
+      this._updateIndicators();
     }
   }
 });

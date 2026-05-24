@@ -14,22 +14,28 @@
   },
   "tabBar": {
     "custom": true,
-    "color": "#8A816F",
-    "selectedColor": "#E08A2E",
-    "backgroundColor": "#FFF8EE",
+    "color": "#B5A68C",
+    "selectedColor": "#FF8C42",
+    "backgroundColor": "#FFFDF6",
     "borderStyle": "white",
     "list": [
       {
         "pagePath": "pages/tasks/tasks",
-        "text": "任务"
+        "text": "做什么",
+        "iconPath": "assets/tab-icons/tasks.png",
+        "selectedIconPath": "assets/tab-icons/tasks-active.png"
       },
       {
         "pagePath": "pages/index/index",
-        "text": "宠物"
+        "text": "宠物",
+        "iconPath": "assets/tab-icons/pet.png",
+        "selectedIconPath": "assets/tab-icons/pet-active.png"
       },
       {
         "pagePath": "pages/parent/parent",
-        "text": "家长"
+        "text": "爸爸妈妈",
+        "iconPath": "assets/tab-icons/parent.png",
+        "selectedIconPath": "assets/tab-icons/parent-active.png"
       }
     ]
   },

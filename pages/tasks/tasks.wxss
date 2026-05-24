@@ -2,6 +2,8 @@
   min-height: 100vh;
   box-sizing: border-box;
   padding: 28rpx 24rpx 48rpx;
+  padding-bottom: 166rpx;
+  padding-bottom: calc(166rpx + env(safe-area-inset-bottom));
   background:
     radial-gradient(circle at top, #fff4d9 0%, #fffdf7 34%, #ffeede 100%);
 }
